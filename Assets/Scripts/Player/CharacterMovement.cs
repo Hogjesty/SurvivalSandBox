@@ -23,6 +23,8 @@ public class CharacterMovement : MonoBehaviour {
     private bool isJumping;
     private bool isReadyToLand;
 
+    private int movingState = 0; // 0 - Idle, 1 - Jogging, 2 - Running, 3 - Crouching
+
     private void Awake() {
         rigidbody = GetComponent<Rigidbody>();
     }
@@ -39,15 +41,16 @@ public class CharacterMovement : MonoBehaviour {
 
         bool isPlayerMoving = moveForward > 0;
         
-        playerAnimator.SetBool("IsRunning", isPlayerMoving);
+        
         
         if (isPlayerMoving) {
             float rotationY = camera.rotation.eulerAngles.y + Mathf.Atan2(horizontal, vertical) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0), rotationSpeed);
         }
 
+
+        playerAnimator.SetInteger("MovingState", movingState);
         HandleJump();
-        
         rigidbody.velocity = transform.TransformDirection(0, gravity, moveForward);
     }
 
