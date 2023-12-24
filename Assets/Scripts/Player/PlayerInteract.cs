@@ -28,7 +28,7 @@ public class PlayerInteract : MonoBehaviour {
             if (Input.GetKeyDown(KeyCode.E) && isGameObjectPickable) {
                 Debug.Log(gameObject.name + " was picked up");
                 Destroy(gameObject);
-                playerAnimator.SetTrigger("IsPickingUp");
+                playerAnimator.SetTrigger("PickUp");
             }
         } else {
             interactPopupCanvas.SetActive(false);

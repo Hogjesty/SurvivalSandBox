@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4dace612f21b0594c969547aa8c4e83b
+guid: 83b11fec52d16a54cad68c0a42f397f9
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -17,7 +17,14 @@ ModelImporter:
     removeConstantScaleCurves: 0
     motionNodeName: 
     rigImportErrors: 
-    rigImportWarnings: 
+    rigImportWarnings: "Copied Avatar Rig Configuration mis-match. Bone length in
+      copied configuration does not match position in animation file:\n\t'mixamorig1:LeftUpLeg'
+      : position error = 24.433214 mm\n\t'mixamorig1:LeftLeg' : position error =
+      6.315691 mm\n\t'mixamorig1:LeftFoot' : position error = 21.661238 mm\n\t'mixamorig1:LeftToeBase'
+      : position error = 8.851708 mm\n\t'mixamorig1:RightUpLeg' : position error
+      = 24.714466 mm\n\t'mixamorig1:RightLeg' : position error = 6.323857 mm\n\t'mixamorig1:RightFoot'
+      : position error = 21.877623 mm\n\t'mixamorig1:RightToeBase' : position error
+      = 3.363277 mm\n"
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -33,11 +40,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Jogging
+      name: CrouchIdle
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 153
+      lastFrame: 100
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
