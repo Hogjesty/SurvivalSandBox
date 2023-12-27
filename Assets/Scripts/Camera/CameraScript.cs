@@ -6,6 +6,7 @@ using UnityEngine;
 public class CameraScript : MonoBehaviour {
     [SerializeField] private float verticalSensitivity;
     [SerializeField] private float horizontalSensitivity;
+    [SerializeField] private float lerpRatio;
     [SerializeField] private Transform playerTransform;
     
     private float cameraDistance;
@@ -26,9 +27,14 @@ public class CameraScript : MonoBehaviour {
         float mouseWheel = Input.GetAxis("Mouse ScrollWheel") * -15;
         
         axisY = Mathf.Clamp(axisY, -85f, 85f);
-        cameraDistance = Mathf.Clamp(cameraDistance + mouseWheel, 1, 60);
+        cameraDistance = Mathf.Clamp(cameraDistance + mouseWheel, 1, 30);
+
+        // transform.rotation = Quaternion.Euler(axisY, axisX, 0f);
+        Quaternion newRotation = Quaternion.Euler(axisY, axisX, 0f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, lerpRatio);
         
-        transform.rotation = Quaternion.Euler(axisY, axisX, 0f);
         transform.position = playerTransform.position - (transform.rotation * Vector3.forward * cameraDistance);
+        // Vector3 newPosition = playerTransform.position - (transform.rotation * Vector3.forward * cameraDistance);
+        // transform.position = Vector3.Slerp(transform.position, newPosition, lerpRatio);
     }
 }
