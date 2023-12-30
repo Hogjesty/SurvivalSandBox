@@ -3959,6 +3959,7 @@ MonoBehaviour:
   playerAnimator: {fileID: 960319481}
   normalPlayerCollider: {fileID: 1840652913}
   smallPlayerCollider: {fileID: 1840652912}
+  playerStateSO: {fileID: 11400000, guid: 375f3cf9d6e6e594eaf6967b2f09a3bb, type: 2}
 --- !u!54 &1840652911
 Rigidbody:
   m_ObjectHideFlags: 0

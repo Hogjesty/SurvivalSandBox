@@ -16,11 +16,13 @@ public class CharacterMovement : MonoBehaviour {
 
     [SerializeField] private CapsuleCollider normalPlayerCollider;
     [SerializeField] private CapsuleCollider smallPlayerCollider;
+    
+    [SerializeField] private PlayerState playerStateSO;
+
     private Rigidbody playerRigidbody;
 
     private float gravity = -10;
     private float moveForward;
-    private float remainedSpeed;
 
     private bool isReadyToJump = true;
     private bool isReadyToLand;
@@ -28,7 +30,7 @@ public class CharacterMovement : MonoBehaviour {
     private int movingState; // 0 - Idle, 1 - Jogging, 2 - Sprint, 3 - Crouching
     private bool isCrouching;
     private bool isSprinting;
-    
+
     private bool isPlayerOnGround;
 
     private void Awake() {
@@ -58,12 +60,13 @@ public class CharacterMovement : MonoBehaviour {
         }
 
         movingState = 0;
-        
+
         moveForward = (new Vector3(horizontal, 0, vertical).normalized * speed).magnitude;
         bool isPlayerMoving = moveForward > 0;
         if (isPlayerMoving) {
             float rotationY = mainCamera.rotation.eulerAngles.y + Mathf.Atan2(horizontal, vertical) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0), isPlayerOnGround ? rotationSpeed : rotationSpeed / 2);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0),
+                isPlayerOnGround ? rotationSpeed : rotationSpeed / 2);
             movingState = isSprinting ? 2 : 1;
             moveForward = isSprinting ? moveForward * sprintCoefficient : moveForward;
         } else {
@@ -74,11 +77,12 @@ public class CharacterMovement : MonoBehaviour {
             movingState = 3;
             moveForward /= 1.7f;
         }
-        
+
         playerAnimator.SetBool("IsCrouching", isCrouching);
         playerAnimator.SetInteger("MovingState", movingState);
-        
-        playerRigidbody.velocity = transform.TransformDirection(0, gravity, isPlayerOnGround ? moveForward : moveForward / 1.3f);
+
+        playerRigidbody.velocity =
+            transform.TransformDirection(0, gravity, isPlayerOnGround ? moveForward : moveForward / 1.3f);
     }
 
     private void HandleJump() {
@@ -88,8 +92,9 @@ public class CharacterMovement : MonoBehaviour {
             if (movingState is 1 or 2) {
                 gravity = jumpForce;
             } else {
-                StartCoroutine(DelayJump());                
+                StartCoroutine(DelayJump());
             }
+
             StartCoroutine(CheckJump());
         }
     }
@@ -98,9 +103,11 @@ public class CharacterMovement : MonoBehaviour {
         isPlayerOnGround = Physics.OverlapSphere(groundPoint.position, 0.15f)
             .Where(x => !x.gameObject.CompareTag("Player"))
             .ToList().Count > 0;
-        
+
+        playerStateSO.isPlayerOnGround = isPlayerOnGround;
+
         playerAnimator.SetBool("IsFalling", !isPlayerOnGround);
-        
+
         if (!isPlayerOnGround) {
             isReadyToLand = true;
             isReadyToJump = false;
@@ -112,10 +119,10 @@ public class CharacterMovement : MonoBehaviour {
                 isReadyToJump = true;
                 playerAnimator.SetBool("Jump", false);
             } else {
-                StartCoroutine(DelayReadyToJump());             
+                StartCoroutine(DelayReadyToJump());
             }
         }
-        
+
         gravity -= Time.deltaTime * gravitySpeed;
         gravity = Mathf.Clamp(gravity, isPlayerOnGround ? -3 : -30, 100);
     }
@@ -136,14 +143,14 @@ public class CharacterMovement : MonoBehaviour {
         yield return new WaitForSeconds(delay);
         if (isPlayerOnGround) {
             isReadyToJump = true;
-            speed = remainedSpeed;
             playerAnimator.SetBool("Jump", false);
         }
     }
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(roofPoint.position, new Vector3(roofPoint.position.x, roofPoint.position.y + 0.7f, roofPoint.position.z));
+        Gizmos.DrawLine(roofPoint.position,
+            new Vector3(roofPoint.position.x, roofPoint.position.y + 0.7f, roofPoint.position.z));
         Gizmos.DrawSphere(groundPoint.position, 0.15f);
     }
 }
