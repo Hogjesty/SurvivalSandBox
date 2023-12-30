@@ -14,10 +14,10 @@ public class CharacterMovement : MonoBehaviour {
     [SerializeField] private Transform roofPoint;
     [SerializeField] private Animator playerAnimator;
 
+    [SerializeField] private CapsuleCollider normalPlayerCollider;
+    [SerializeField] private CapsuleCollider smallPlayerCollider;
     private Rigidbody playerRigidbody;
-    private CapsuleCollider playerCollider;
 
-    private bool onGround;
     private float gravity = -10;
     private float moveForward;
     private float remainedSpeed;
@@ -28,15 +28,16 @@ public class CharacterMovement : MonoBehaviour {
     private int movingState; // 0 - Idle, 1 - Jogging, 2 - Sprint, 3 - Crouching
     private bool isCrouching;
     private bool isSprinting;
+    
+    private bool isPlayerOnGround;
 
     private void Awake() {
         playerRigidbody = GetComponent<Rigidbody>();
-        playerCollider = GetComponent<CapsuleCollider>();
-        
-        remainedSpeed = speed;
     }
 
     private void Update() {
+        HandleJump();
+        HandleGravity();
         Move();
     }
 
@@ -45,15 +46,10 @@ public class CharacterMovement : MonoBehaviour {
         float vertical = Input.GetAxisRaw("Vertical");
 
         if (Input.GetKeyDown(KeyCode.LeftControl) && !isSprinting) {
-            bool canStay = !Physics.Raycast(roofPoint.position, Vector3.up, 0.7f);
-            if (isCrouching && canStay) {
-                isCrouching = false;
-                playerCollider.center = new Vector3(playerCollider.center.x, 0.9f, playerCollider.center.z);
-                playerCollider.height = 1.8f;
-            } else if (!isCrouching) {
-                isCrouching = true;
-                playerCollider.center = new Vector3(playerCollider.center.x, 0.65f, playerCollider.center.z);
-                playerCollider.height = 1.3f;
+            if (!isCrouching || !Physics.Raycast(roofPoint.position, Vector3.up, 0.7f)) {
+                isCrouching = !isCrouching;
+                normalPlayerCollider.enabled = !isCrouching;
+                smallPlayerCollider.enabled = isCrouching;
             }
         }
 
@@ -67,7 +63,7 @@ public class CharacterMovement : MonoBehaviour {
         bool isPlayerMoving = moveForward > 0;
         if (isPlayerMoving) {
             float rotationY = mainCamera.rotation.eulerAngles.y + Mathf.Atan2(horizontal, vertical) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0), isReadyToJump ? rotationSpeed : rotationSpeed / 5);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0), isPlayerOnGround ? rotationSpeed : rotationSpeed / 2);
             movingState = isSprinting ? 2 : 1;
             moveForward = isSprinting ? moveForward * sprintCoefficient : moveForward;
         } else {
@@ -76,33 +72,30 @@ public class CharacterMovement : MonoBehaviour {
 
         if (isPlayerMoving && isCrouching) {
             movingState = 3;
-            moveForward /= 2;
+            moveForward /= 1.7f;
         }
         
         playerAnimator.SetBool("IsCrouching", isCrouching);
         playerAnimator.SetInteger("MovingState", movingState);
-
-        HandleJump();
-        HandleGravity();
-        playerRigidbody.velocity = transform.TransformDirection(0, gravity, moveForward);
+        
+        playerRigidbody.velocity = transform.TransformDirection(0, gravity, isPlayerOnGround ? moveForward : moveForward / 1.3f);
     }
 
     private void HandleJump() {
         if (Input.GetKeyDown(KeyCode.Space) && isReadyToJump && !isCrouching) {
             isReadyToJump = false;
-            playerAnimator.SetTrigger("Jump");
+            playerAnimator.SetBool("Jump", true);
             if (movingState is 1 or 2) {
                 gravity = jumpForce;
             } else {
-                remainedSpeed = speed;
-                speed /= 3;
                 StartCoroutine(DelayJump());                
             }
+            StartCoroutine(CheckJump());
         }
     }
 
     private void HandleGravity() {
-        bool isPlayerOnGround = Physics.OverlapSphere(groundPoint.position, 0.15f)
+        isPlayerOnGround = Physics.OverlapSphere(groundPoint.position, 0.15f)
             .Where(x => !x.gameObject.CompareTag("Player"))
             .ToList().Count > 0;
         
@@ -115,7 +108,12 @@ public class CharacterMovement : MonoBehaviour {
 
         if (isReadyToLand && isPlayerOnGround) {
             isReadyToLand = false;
-            StartCoroutine(DelayReadyToJump());
+            if (movingState is 1 or 2) {
+                isReadyToJump = true;
+                playerAnimator.SetBool("Jump", false);
+            } else {
+                StartCoroutine(DelayReadyToJump());             
+            }
         }
         
         gravity -= Time.deltaTime * gravitySpeed;
@@ -130,7 +128,17 @@ public class CharacterMovement : MonoBehaviour {
     private IEnumerator DelayReadyToJump() {
         yield return new WaitForSeconds(0.25f);
         isReadyToJump = true;
-        speed = remainedSpeed;
+        playerAnimator.SetBool("Jump", false);
+    }
+
+    private IEnumerator CheckJump() {
+        float delay = movingState is 1 or 2 ? 0.05f : 0.35f;
+        yield return new WaitForSeconds(delay);
+        if (isPlayerOnGround) {
+            isReadyToJump = true;
+            speed = remainedSpeed;
+            playerAnimator.SetBool("Jump", false);
+        }
     }
 
     private void OnDrawGizmos() {
