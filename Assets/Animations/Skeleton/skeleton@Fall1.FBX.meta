@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 565d7bdee9496b847a3b218355dff0d9
+guid: 11eebf6d9775b9f4dae0fcdb25f3d1b3
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable:
@@ -287,7 +287,7 @@ ModelImporter:
     second: jar_01
   - first:
       74: 7400000
-    second: Idle1
+    second: Death
   - first:
       95: 9500000
     second: //RootNode
@@ -324,18 +324,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Idle1
+      name: Death
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 70
+      lastFrame: 36
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
