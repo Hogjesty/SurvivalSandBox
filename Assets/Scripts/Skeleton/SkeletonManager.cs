@@ -1,20 +1,29 @@
+using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class SkeletonManager : MonoBehaviour {
 
     [SerializeField] private float speed;
     [SerializeField] private Transform player;
+    [SerializeField] private Transform hitPoint;
     
     [SerializeField] private Animator skeletonAnimator;
 
     private bool isHittingPlayer;
+    private bool isHitOnCooldown;
 
     private void Update() {
         float distance = Vector3.Distance(player.position, transform.position);
-        bool canHit = distance <= 1.01f;
         
-        skeletonAnimator.SetBool("IsHittingPlayer", canHit);
+        bool canHit = distance <= 1.01f && !isHitOnCooldown;
+        
         if (canHit) {
+            isHitOnCooldown = true;
+            isHittingPlayer = true;
+            StartCoroutine(HandleHit());
+        }
+        if (isHittingPlayer) {
             RotateToPlayer();
         }
         
@@ -26,6 +35,24 @@ public class SkeletonManager : MonoBehaviour {
             RotateToPlayer();
             transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
         }
+    }
+
+    private IEnumerator HandleHit() {
+        skeletonAnimator.SetBool("IsHittingPlayer", true);
+        yield return new WaitForSeconds(1f);
+
+        bool playerDetected = Physics.OverlapSphere(hitPoint.position, 0.5f)
+            .Where(x => x.gameObject.CompareTag("Player"))
+            .ToList().Count > 0;
+
+        if (playerDetected) {
+            Debug.Log("Player got hit!!!");
+        }
+        
+        skeletonAnimator.SetBool("IsHittingPlayer", false);
+        yield return new WaitForSeconds(4f);
+        isHitOnCooldown = false;
+        isHittingPlayer = false;
     }
 
     private void RotateToPlayer() {
