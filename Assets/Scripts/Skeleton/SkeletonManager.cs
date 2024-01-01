@@ -39,7 +39,7 @@ public class SkeletonManager : MonoBehaviour {
 
     private IEnumerator HandleHit() {
         skeletonAnimator.SetBool("IsHittingPlayer", true);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.7f);
 
         bool playerDetected = Physics.OverlapSphere(hitPoint.position, 0.5f)
             .Where(x => x.gameObject.CompareTag("Player"))
@@ -50,7 +50,7 @@ public class SkeletonManager : MonoBehaviour {
         }
         
         skeletonAnimator.SetBool("IsHittingPlayer", false);
-        yield return new WaitForSeconds(4f);
+        yield return new WaitForSeconds(2f);
         isHitOnCooldown = false;
         isHittingPlayer = false;
     }
@@ -60,5 +60,10 @@ public class SkeletonManager : MonoBehaviour {
         directionToPlayer.y = 0;
         Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
+    }
+    
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(hitPoint.position, 0.5f);
     }
 }
