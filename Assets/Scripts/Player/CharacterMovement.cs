@@ -31,6 +31,7 @@ public class CharacterMovement : MonoBehaviour {
     
     [SerializeField] private GameObject swordInBelt;
     [SerializeField] private GameObject swordInHand;
+    [SerializeField] private GameObject damageNumber;
     
     [SerializeField] private PlayerState playerStateSO;
 
@@ -51,6 +52,7 @@ public class CharacterMovement : MonoBehaviour {
     
     private bool canHit;
     private bool isHoldingSword;
+    private bool isHitting;
     private float swordSlashAnimDuration;
 
     private void Awake() {
@@ -107,6 +109,12 @@ public class CharacterMovement : MonoBehaviour {
         if (isPlayerMoving && isCrouching) {
             movingState = 3;
             moveForward /= 1.7f;
+        }
+
+        if (isHitting) {
+            float rotationY = mainCamera.rotation.eulerAngles.y + Mathf.Atan2(horizontal, vertical) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0),
+                isPlayerOnGround ? rotationSpeed : rotationSpeed / 2);
         }
 
         playerAnimator.SetBool(IS_CROUCHING_BOOL, isCrouching);
@@ -177,17 +185,24 @@ public class CharacterMovement : MonoBehaviour {
     }
 
     private IEnumerator ProceedHit() {
+        isHitting = true;
         playerAnimator.SetBool(IS_HITTING_BOOL, true);
         yield return new WaitForSeconds(0.1f);
 
         Collider enemy = Physics.OverlapSphere(hitPoint.position, 0.5f).FirstOrDefault(c => c.gameObject.CompareTag("Enemy"));
         if (enemy is not null) {
             SkeletonManager skeletonManager = enemy.gameObject.GetComponent<SkeletonManager>();
+            int damage = UnityEngine.Random.Range(10, 20);
+            skeletonManager.SetDamage(damage);
+            Vector3 point = enemy.gameObject.transform.position;
+            GameObject damageNumberObj = Instantiate(damageNumber, new Vector3(point.x, point.y + 2, point.z), Quaternion.identity);
+            damageNumberObj.GetComponent<DamageNumber>()?.PostInit(damage, mainCamera.position);
         }
 
         playerAnimator.SetBool(IS_HITTING_BOOL, false);
         yield return new WaitForSeconds(0.8f);
         speed = remainingSpeed;
+        isHitting = false;
         yield return new WaitForSeconds(0.1f);
         canHit = true;
     }
