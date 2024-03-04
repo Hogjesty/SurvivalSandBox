@@ -1,10 +1,8 @@
-using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour {
-
     private static readonly int WITHDRAW_SWORD_TRIGGER = Animator.StringToHash("WithdrawSword");
     private static readonly int SHEAT_SWORD_TRIGGER = Animator.StringToHash("SheatSword");
     private static readonly int IS_HITTING_BOOL = Animator.StringToHash("IsHitting");
@@ -12,8 +10,7 @@ public class CharacterMovement : MonoBehaviour {
     private static readonly int MOVING_STATE_INT = Animator.StringToHash("MovingState");
     private static readonly int JUMP_BOOL = Animator.StringToHash("Jump");
     private static readonly int IS_FALLING_BOOL = Animator.StringToHash("IsFalling");
-
-
+    
     [SerializeField] private float speed; //5
     [SerializeField] private float rotationSpeed; // 0.2
     [SerializeField] private float gravitySpeed; // 35
@@ -28,17 +25,12 @@ public class CharacterMovement : MonoBehaviour {
 
     [SerializeField] private CapsuleCollider normalPlayerCollider;
     [SerializeField] private CapsuleCollider smallPlayerCollider;
-    
+
     [SerializeField] private GameObject swordInBelt;
     [SerializeField] private GameObject swordInHand;
     [SerializeField] private GameObject damageNumber;
-    
-    [SerializeField] private PlayerState playerStateSO;
-
-    private Rigidbody playerRigidbody;
 
     private float gravity = -10;
-    private float moveForward;
     private float remainingSpeed;
 
     private bool isReadyToJump = true;
@@ -49,25 +41,18 @@ public class CharacterMovement : MonoBehaviour {
     private bool isSprinting;
 
     private bool isPlayerOnGround;
-    
+
     private bool canHit;
     private bool isHoldingSword;
     private bool isHitting;
     private float swordSlashAnimDuration;
 
     private void Awake() {
-        playerRigidbody = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
         remainingSpeed = speed;
-        
-        AnimationClip[] animationClips = playerAnimator.runtimeAnimatorController.animationClips;
-
-        foreach (AnimationClip animatorClipInfo in animationClips) {
-            if (animatorClipInfo.name.Equals("SwordSlash")) {
-                swordSlashAnimDuration = animatorClipInfo.length;
-            }
-        }
     }
 
+    private CharacterController characterController;
     private void Update() {
         HandleSwordWithdraw();
         HandleHit();
@@ -76,10 +61,11 @@ public class CharacterMovement : MonoBehaviour {
         Move();
     }
 
-    private void Move() {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+    private Vector3 direction;
 
+    private void Move() {
+        direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
+        
         if (Input.GetKeyDown(KeyCode.LeftControl) && !isSprinting) {
             if (!isCrouching || !Physics.Raycast(roofPoint.position, Vector3.up, 0.7f)) {
                 isCrouching = !isCrouching;
@@ -93,37 +79,35 @@ public class CharacterMovement : MonoBehaviour {
         }
 
         movingState = 0;
-
-        moveForward = (new Vector3(horizontal, 0, vertical).normalized * speed).magnitude;
-        bool isPlayerMoving = moveForward > 0;
+        
+        bool isPlayerMoving = direction.magnitude > 0;
         if (isPlayerMoving) {
-            float rotationY = mainCamera.rotation.eulerAngles.y + Mathf.Atan2(horizontal, vertical) * Mathf.Rad2Deg;
+            float rotationY = mainCamera.rotation.eulerAngles.y + Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0),
                 isPlayerOnGround ? rotationSpeed : rotationSpeed / 2);
             movingState = isSprinting ? 2 : 1;
-            moveForward = isSprinting ? moveForward * sprintCoefficient : moveForward;
         } else {
             isSprinting = false;
         }
 
         if (isPlayerMoving && isCrouching) {
             movingState = 3;
-            moveForward /= 1.7f;
         }
 
         if (isHitting) {
-            float rotationY = mainCamera.rotation.eulerAngles.y + Mathf.Atan2(horizontal, vertical) * Mathf.Rad2Deg;
+            float rotationY = mainCamera.rotation.eulerAngles.y + Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, rotationY, 0),
                 isPlayerOnGround ? rotationSpeed : rotationSpeed / 2);
         }
 
         playerAnimator.SetBool(IS_CROUCHING_BOOL, isCrouching);
         playerAnimator.SetInteger(MOVING_STATE_INT, movingState);
-
-        playerRigidbody.velocity =
-            transform.TransformDirection(0, gravity, isPlayerOnGround ? moveForward : moveForward / 1.3f);
+        
+        direction = mainCamera.transform.TransformDirection(direction).normalized;
+        direction.y = gravity;
+        characterController.Move(direction * Time.deltaTime * (isSprinting ? speed * sprintCoefficient : speed));
     }
-    
+
     private void HandleSwordWithdraw() {
         if (Input.GetKeyDown(KeyCode.Alpha1) && movingState == 0 && !isCrouching) {
             isHoldingSword = !isHoldingSword;
@@ -132,7 +116,7 @@ public class CharacterMovement : MonoBehaviour {
             StartCoroutine(ProceedSwordWithdraw());
         }
     }
-    
+
     private void HandleHit() {
         if (Input.GetKey(KeyCode.Mouse0) && canHit && isHoldingSword && movingState == 0 && !isCrouching) {
             canHit = false;
@@ -160,9 +144,6 @@ public class CharacterMovement : MonoBehaviour {
         isPlayerOnGround = Physics.OverlapSphere(groundPoint.position, 0.15f)
             .Where(x => !x.gameObject.CompareTag("Player"))
             .ToList().Count > 0;
-
-        playerStateSO.isPlayerOnGround = isPlayerOnGround;
-
         playerAnimator.SetBool(IS_FALLING_BOOL, !isPlayerOnGround);
 
         if (!isPlayerOnGround) {
@@ -189,13 +170,15 @@ public class CharacterMovement : MonoBehaviour {
         playerAnimator.SetBool(IS_HITTING_BOOL, true);
         yield return new WaitForSeconds(0.1f);
 
-        Collider enemy = Physics.OverlapSphere(hitPoint.position, 0.5f).FirstOrDefault(c => c.gameObject.CompareTag("Enemy"));
+        Collider enemy = Physics.OverlapSphere(hitPoint.position, 0.5f)
+            .FirstOrDefault(c => c.gameObject.CompareTag("Enemy"));
         if (enemy is not null) {
             SkeletonManager skeletonManager = enemy.gameObject.GetComponent<SkeletonManager>();
             int damage = UnityEngine.Random.Range(10, 20);
             skeletonManager.SetDamage(damage);
             Vector3 point = enemy.gameObject.transform.position;
-            GameObject damageNumberObj = Instantiate(damageNumber, new Vector3(point.x, point.y + 2, point.z), Quaternion.identity);
+            GameObject damageNumberObj = Instantiate(damageNumber, new Vector3(point.x, point.y + 2, point.z),
+                Quaternion.identity);
             damageNumberObj.GetComponent<DamageNumber>()?.PostInit(damage, mainCamera.position);
         }
 
@@ -209,15 +192,15 @@ public class CharacterMovement : MonoBehaviour {
 
     private IEnumerator ProceedSwordWithdraw() {
         playerAnimator.SetTrigger(isHoldingSword ? WITHDRAW_SWORD_TRIGGER : SHEAT_SWORD_TRIGGER);
-        
+
         yield return new WaitForSeconds(isHoldingSword ? 0.55f : 1.3f);
         canHit = isHoldingSword;
 
         swordInHand.SetActive(isHoldingSword);
         swordInBelt.SetActive(!isHoldingSword);
-        
+
         yield return new WaitForSeconds(0.2f);
-        
+
         speed = remainingSpeed;
     }
 

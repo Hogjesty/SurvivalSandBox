@@ -1501,6 +1501,9 @@ MonoBehaviour:
   horizontalSensitivity: 800
   lerpRatio: 0.3
   playerTransform: {fileID: 767811830}
+  obstacle:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1001 &402447157
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2388,7 +2391,7 @@ GameObject:
   - component: {fileID: 692280010}
   - component: {fileID: 692280009}
   - component: {fileID: 692280008}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4376,9 +4379,9 @@ GameObject:
   - component: {fileID: 1840652908}
   - component: {fileID: 1840652913}
   - component: {fileID: 1840652912}
-  - component: {fileID: 1840652911}
   - component: {fileID: 1840652910}
   - component: {fileID: 1840652909}
+  - component: {fileID: 1840652914}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -4394,8 +4397,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1840652907}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.6705899, z: -0, w: 0.7418283}
-  m_LocalPosition: {x: -1.2, y: 6.605, z: -21.2}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0.686, y: 6.605, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4406,7 +4409,7 @@ Transform:
   - {fileID: 481476199}
   - {fileID: 1498947314}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 84.225, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &1840652909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4437,8 +4440,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 5
   rotationSpeed: 0.08
-  gravitySpeed: 35
-  jumpForce: 11
+  gravitySpeed: 15
+  jumpForce: 5
   sprintCoefficient: 2
   mainCamera: {fileID: 330585546}
   groundPoint: {fileID: 767810293}
@@ -4451,34 +4454,6 @@ MonoBehaviour:
   swordInHand: {fileID: 2019081298}
   damageNumber: {fileID: 8221082413652121007, guid: 386cbe85b1fefd24d872d2dbfa3a73be,
     type: 3}
-  playerStateSO: {fileID: 11400000, guid: 375f3cf9d6e6e594eaf6967b2f09a3bb, type: 2}
---- !u!54 &1840652911
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1840652907}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
 --- !u!136 &1840652912
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -4519,12 +4494,38 @@ CapsuleCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Radius: 0.29
   m_Height: 1.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!143 &1840652914
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1840652907}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 1.8
+  m_Radius: 0.29
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0.96, z: 0}
 --- !u!4 &1919142989 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2ef49c9566c1a594892aad741d4371b9,
@@ -7145,6 +7146,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Skeleton
+      objectReference: {fileID: 0}
+    - target: {fileID: 8764070026077267651, guid: dca8e056b77d49c4aafe4dbcc2bab713,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -8,6 +8,7 @@ public class CameraScript : MonoBehaviour {
     [SerializeField] private float horizontalSensitivity;
     [SerializeField] private float lerpRatio;
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private LayerMask obstacle;
     
     private float cameraDistance;
 
@@ -29,12 +30,29 @@ public class CameraScript : MonoBehaviour {
         axisY = Mathf.Clamp(axisY, -85f, 85f);
         cameraDistance = Mathf.Clamp(cameraDistance + mouseWheel, 1, 30);
 
-        // transform.rotation = Quaternion.Euler(axisY, axisX, 0f);
         Quaternion newRotation = Quaternion.Euler(axisY, axisX, 0f);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, lerpRatio);
         
-        transform.position = playerTransform.position - (transform.rotation * Vector3.forward * cameraDistance);
-        // Vector3 newPosition = playerTransform.position - (transform.rotation * Vector3.forward * cameraDistance);
-        // transform.position = Vector3.Slerp(transform.position, newPosition, lerpRatio);
+        transform.position = playerTransform.position - transform.forward * cameraDistance;
+        ObstacleReact();
     }
+
+    private void ObstacleReact() {
+        bool didHitWall = Physics.Raycast(
+            playerTransform.position,
+            transform.position - playerTransform.position,
+            out RaycastHit hit,
+            cameraDistance,
+            obstacle);
+        
+        if (didHitWall) {
+            transform.position = hit.point;
+        }
+    }
+
+    // private void OnDrawGizmos() {
+    //     Gizmos.color = Color.red;
+    //     Vector3 dir = transform.position - playerTransform.position;
+    //     Gizmos.DrawRay(playerTransform.position, dir);
+    // }
 }
