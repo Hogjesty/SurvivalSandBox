@@ -1,4 +1,4 @@
-namespace HFSM.Movement.States.SubStates {
+namespace Learning.HFSM.Movement.States.SubStates {
     public class Jumping : BaseState {
         public Jumping(StateMachine stateMachine) : base("Jumping", stateMachine) {
         }

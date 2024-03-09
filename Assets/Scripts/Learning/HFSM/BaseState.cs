@@ -1,4 +1,4 @@
-namespace HFSM {
+namespace Learning.HFSM {
     public class BaseState {
         public readonly string name;
 

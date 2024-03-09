@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HFSM.Movement.States {
+namespace Learning.HFSM.Movement.States {
     public class Grounded : BaseState {
         protected MovementSM sm;
 

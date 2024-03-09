@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HFSM.Movement.States.SubStates {
+namespace Learning.HFSM.Movement.States.SubStates {
     public class Jogging: Grounded {
         public Jogging(StateMachine stateMachine) : base("Jogging", stateMachine) {
         }

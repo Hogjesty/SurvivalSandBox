@@ -10,7 +10,7 @@ public class Walk : State {
         base.Exit();
     }
 
-    public override void Update(Player context) {
+    public override void Update(PlayerSM context) {
         //if W or A or S or D {
         // CC.Move(KEY, speed)
         //} else {

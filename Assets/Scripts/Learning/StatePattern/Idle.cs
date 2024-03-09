@@ -8,7 +8,7 @@ namespace StatePattern {
             Debug.Log("idle entered");
         }
         
-        public virtual void Update(Player context) {
+        public virtual void Update(PlayerSM context) {
         
             //if Space.pressed -> ToggleState(Jump)
             //if W or A or S or D -> ToggleState(Walk)

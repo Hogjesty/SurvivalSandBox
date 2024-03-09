@@ -1,7 +1,7 @@
-using HFSM.Movement.States.SubStates;
+using Learning.HFSM.Movement.States.SubStates;
 using UnityEngine;
 
-namespace HFSM.Movement {
+namespace Learning.HFSM.Movement {
     public class MovementSM : StateMachine {
         [HideInInspector] public Idle idleState;
         

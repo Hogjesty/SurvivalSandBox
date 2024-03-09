@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HFSM.Movement.States.SubStates {
+namespace Learning.HFSM.Movement.States.SubStates {
     public class Idle: Grounded {
         public Idle(StateMachine stateMachine) : base("Idle", stateMachine) {
         }

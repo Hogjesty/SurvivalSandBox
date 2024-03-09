@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace HFSM {
+namespace Learning.HFSM {
     public abstract class StateMachine : MonoBehaviour {
         private BaseState currentState;
 

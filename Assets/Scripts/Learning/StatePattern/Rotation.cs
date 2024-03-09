@@ -10,7 +10,7 @@ namespace StatePattern {
             base.Exit();
         }
 
-        public override void Update(Player context) {
+        public override void Update(PlayerSM context) {
             base.Update(context);
             context.transform.Rotation(23);
         }

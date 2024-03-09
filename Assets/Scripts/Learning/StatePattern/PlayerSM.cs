@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using StatePattern;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class PlayerSM : MonoBehaviour {
 
     private StateMachine playerStateMachine;
 

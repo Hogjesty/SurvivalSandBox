@@ -8,7 +8,7 @@ public abstract class State {
         
     }
 
-    public virtual void Update(Player context) {
+    public virtual void Update(PlayerSM context) {
         
     }
 
