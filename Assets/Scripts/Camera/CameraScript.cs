@@ -22,14 +22,14 @@ public class CameraScript : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update() {
+    private void LateUpdate() {
         axisX += Input.GetAxis("Mouse X") * Time.deltaTime * verticalSensitivity;
         axisY -= Input.GetAxis("Mouse Y") * Time.deltaTime * horizontalSensitivity;
         float mouseWheel = Input.GetAxis("Mouse ScrollWheel") * -15;
         
         axisY = Mathf.Clamp(axisY, -85f, 85f);
         cameraDistance = Mathf.Clamp(cameraDistance + mouseWheel, 1, 30);
-
+    
         Quaternion newRotation = Quaternion.Euler(axisY, axisX, 0f);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, lerpRatio);
         

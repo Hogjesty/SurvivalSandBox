@@ -1,5 +1,25 @@
+using UnityEngine;
+
 namespace Player.StateMachines {
-    public class StateMachine {
-        
+    public abstract class StateMachine : MonoBehaviour {
+        private BaseState currentState;
+        protected BaseState CurrentState => currentState;
+
+        private void Start() {
+            currentState = GetInitialState();
+            currentState?.Enter();
+        }
+
+        private void Update() {
+            currentState?.Update();
+        }
+
+        protected abstract BaseState GetInitialState();
+
+        public void ChangeState(BaseState newState) {
+            currentState.Exit();
+            currentState = newState;
+            newState.Enter();
+        }
     }
 }

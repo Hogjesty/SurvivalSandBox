@@ -174,7 +174,7 @@ public class CharacterMovement : MonoBehaviour {
             .FirstOrDefault(c => c.gameObject.CompareTag("Enemy"));
         if (enemy is not null) {
             SkeletonManager skeletonManager = enemy.gameObject.GetComponent<SkeletonManager>();
-            int damage = UnityEngine.Random.Range(10, 20);
+            int damage = Random.Range(10, 20);
             skeletonManager.SetDamage(damage);
             Vector3 point = enemy.gameObject.transform.position;
             GameObject damageNumberObj = Instantiate(damageNumber, new Vector3(point.x, point.y + 2, point.z),
