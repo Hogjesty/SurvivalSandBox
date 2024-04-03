@@ -11,6 +11,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Enter() {
             base.Enter();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_RUNNING, true);
             currentSpeed = movementStateMachine.GetSpeed * movementStateMachine.GetSprintCoefficient;
         }
 
@@ -29,6 +30,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Exit() {
             base.Exit();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_RUNNING, false);
             movementStateMachine.lastSpeed = currentSpeed;
         }
 

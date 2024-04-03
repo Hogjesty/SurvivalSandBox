@@ -10,6 +10,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Enter() {
             base.Enter();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_SNEAKING, true);
             currentSpeed = movementStateMachine.GetSpeed * 0.5f;
             movementStateMachine.GetCharacterController.height = 1.05f;
             movementStateMachine.GetCharacterController.center = new Vector3(0, 0.6f, 0);
@@ -30,6 +31,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Exit() {
             base.Exit();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_SNEAKING, false);
             movementStateMachine.lastSpeed = currentSpeed;
             movementStateMachine.GetCharacterController.height = 1.6f;
             movementStateMachine.GetCharacterController.center = new Vector3(0, 0.85f, 0);

@@ -16,6 +16,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Enter() {
             base.Enter();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_JUMPING, true);
             readyToLand = false;
             gravity = movementStateMachine.GetJumpForce;
             velocity = 0;
@@ -40,6 +41,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Exit() {
             base.Exit();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_JUMPING, false);
             movementStateMachine.lastSpeed = currentSpeed;
         }
         

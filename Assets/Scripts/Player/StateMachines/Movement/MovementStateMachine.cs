@@ -3,9 +3,17 @@ using UnityEngine;
 
 namespace Player.StateMachines.Movement {
     public class MovementStateMachine : StateMachine {
+        public static readonly int IS_IDLE = Animator.StringToHash("IsIdle");
+        public static readonly int IS_JOGGING = Animator.StringToHash("IsJogging");
+        public static readonly int IS_RUNNING = Animator.StringToHash("IsRunning");
+        public static readonly int IS_JUMPING = Animator.StringToHash("IsJumping");
+        public static readonly int IS_FALLING = Animator.StringToHash("IsFalling");
+        public static readonly int IS_SNEAKING = Animator.StringToHash("IsSneaking");
+        public static readonly int IS_CROUCHING = Animator.StringToHash("IsCrouching");
         
         [SerializeField] private Transform mainCamera;
         [SerializeField] private Transform groundPoint;
+        [SerializeField] private Animator playerAnimator;
 
         [SerializeField] private float speed;
         [SerializeField] private float sprintCoefficient;
@@ -60,6 +68,7 @@ namespace Player.StateMachines.Movement {
         public float GetRotationSpeed => rotationSpeed;
         public Transform GetMainCamera => mainCamera;
         public Transform GetGroundPoint => groundPoint;
+        public Animator GetPlayerAnimator => playerAnimator;
         public CharacterController GetCharacterController => characterController;
         public float GetSpeed => speed;
         public float GetSprintCoefficient => sprintCoefficient;

@@ -14,6 +14,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Enter() {
             base.Enter();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_FALLING, true);
             velocity = 0;
             currentSpeed = movementStateMachine.lastSpeed;
             targetSpeed = movementStateMachine.GetSpeed * 0.1f;
@@ -35,6 +36,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
 
         public override void Exit() {
             base.Exit();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_FALLING, false);
             movementStateMachine.lastSpeed = currentSpeed;
         }
         

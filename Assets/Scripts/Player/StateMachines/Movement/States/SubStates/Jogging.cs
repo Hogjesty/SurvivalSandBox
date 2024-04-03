@@ -10,6 +10,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         
         public override void Enter() {
             base.Enter();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_JOGGING, true);
             currentSpeed = movementStateMachine.GetSpeed;
         }
 
@@ -28,6 +29,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         
         public override void Exit() {
             base.Exit();
+            movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_JOGGING, false);
             movementStateMachine.lastSpeed = currentSpeed;
         }
 

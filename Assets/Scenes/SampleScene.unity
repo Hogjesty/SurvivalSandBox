@@ -5235,6 +5235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 330585546}
   groundPoint: {fileID: 767810293}
+  playerAnimator: {fileID: 5866666021667979697}
   speed: 5
   sprintCoefficient: 2
   rotationSpeed: 0.08
