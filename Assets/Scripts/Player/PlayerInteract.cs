@@ -30,9 +30,11 @@ public class PlayerInteract : MonoBehaviour {
                 Debug.Log(transformGameObject.name + " was picked up");
 
 
-                playerAnimator.SetTrigger("PickUp");
+                playerAnimator.SetBool("PickUp", true);
                 pickedObjPos = transformGameObject.transform.position;
                 Destroy(transformGameObject);
+            } else {
+                playerAnimator.SetBool("PickUp", false);
             }
         } else {
             interactPopupCanvas.SetActive(false);

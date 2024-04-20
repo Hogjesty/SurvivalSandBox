@@ -77,8 +77,8 @@ namespace Player.StateMachines.Movement {
         public float GetFallingBorder => fallingBorder;
         
         private void OnGUI() {
-            GUILayout.BeginArea(new Rect(10f, 10f, 200f, 100f));
-            string content = CurrentState != null ? CurrentState.name : "(no current state)";
+            GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
+            string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
             GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
             GUILayout.EndArea();
         }

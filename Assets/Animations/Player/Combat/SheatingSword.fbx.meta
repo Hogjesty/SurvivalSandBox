@@ -56,7 +56,23 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.8323699
+        functionName: EndOfWeaponUnequippingAnim
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 6f8457035dd35224f87037f09e8721b2,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7548638
+        functionName: PointOfWeaponUnequippingAnim
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 6f8457035dd35224f87037f09e8721b2,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}

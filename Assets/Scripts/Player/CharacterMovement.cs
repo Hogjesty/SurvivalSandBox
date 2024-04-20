@@ -175,11 +175,9 @@ public class CharacterMovement : MonoBehaviour {
         if (enemy is not null) {
             SkeletonManager skeletonManager = enemy.gameObject.GetComponent<SkeletonManager>();
             int damage = Random.Range(10, 20);
-            skeletonManager.SetDamage(damage);
+            // skeletonManager.SetDamage(damage);
             Vector3 point = enemy.gameObject.transform.position;
-            GameObject damageNumberObj = Instantiate(damageNumber, new Vector3(point.x, point.y + 2, point.z),
-                Quaternion.identity);
-            damageNumberObj.GetComponent<DamageNumber>()?.PostInit(damage, mainCamera.position);
+            
         }
 
         playerAnimator.SetBool(IS_HITTING_BOOL, false);
@@ -224,7 +222,7 @@ public class CharacterMovement : MonoBehaviour {
         }
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmosSelected() {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(roofPoint.position,
             new Vector3(roofPoint.position.x, roofPoint.position.y + 0.7f, roofPoint.position.z));

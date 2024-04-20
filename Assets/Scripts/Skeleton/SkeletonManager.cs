@@ -1,7 +1,7 @@
-using System;
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+using CombatEssentials;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,20 +11,25 @@ public class SkeletonManager : MonoBehaviour {
     [SerializeField] private float speed;
     [SerializeField] private Transform player;
     [SerializeField] private Transform hitPoint;
-    
+    [SerializeField] private Transform mainCamera;
+    [SerializeField] private GameObject damageNumber;
+
     [SerializeField] private Animator skeletonAnimator;
-    
+
     [SerializeField] private TextMeshProUGUI healthAmount;
     [SerializeField] private Slider healthLine;
+
+    private CombatAttributes combatAttributes;
 
     private bool isHittingPlayer;
     private bool isHitOnCooldown;
     private bool isDying;
 
-    private float health = 100f;
-
     private void Start() {
-        healthAmount.text = health.ToString(CultureInfo.CurrentCulture);
+        combatAttributes = GetComponent<CombatAttributes>();
+        healthAmount.text = combatAttributes.GetHealth.ToString(CultureInfo.CurrentCulture);
+        combatAttributes.takingDamage += TakingDamage;
+        combatAttributes.death += Death;
     }
 
     private void Update() {
@@ -56,27 +61,7 @@ public class SkeletonManager : MonoBehaviour {
         }
     }
 
-    public void SetDamage(float damage) {
-        health -= damage;
-        healthAmount.text = health.ToString(CultureInfo.CurrentCulture);
-        healthLine.value = health;
-        if (health <= 0) {
-            healthAmount.text = "0";
-            healthLine.value = 0f;
-            isDying = true;
-            StartCoroutine(ProceedDeath());
-        }
-
-        if (!isHittingPlayer) {
-            skeletonAnimator.SetTrigger("HitBy");
-        }
-    }
-
-    private IEnumerator ProceedDeath() {
-        skeletonAnimator.SetTrigger("Death");
-        yield return new WaitForSeconds(1.2f);
-        Destroy(gameObject);
-    }
+    
 
     private IEnumerator HandleHit() {
         skeletonAnimator.SetBool("IsHittingPlayer", true);
@@ -102,6 +87,35 @@ public class SkeletonManager : MonoBehaviour {
         directionToPlayer.y = 0;
         Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 0.05f);
+    }
+
+    private void TakingDamage(int damage) {
+        if (!isHittingPlayer) {
+            skeletonAnimator.SetTrigger("HitBy");
+        }
+        healthAmount.text = combatAttributes.GetHealth.ToString(CultureInfo.CurrentCulture);
+        healthLine.value = combatAttributes.GetHealth;
+        GameObject damageNumberObj = Instantiate(damageNumber, new Vector3(transform.position.x, transform.position.y + 2, transform.position.z),
+            Quaternion.identity);
+        damageNumberObj.GetComponent<DamageNumber>()?.PostInit(damage, mainCamera.position);
+    }
+
+    private void Death() {
+        healthAmount.text = "0";
+        healthLine.value = 0f;
+        isDying = true;
+        StartCoroutine(ProceedDeath());
+    }
+    
+    private IEnumerator ProceedDeath() {
+        skeletonAnimator.SetTrigger("Death");
+        yield return new WaitForSeconds(1.2f);
+        Destroy(gameObject);
+    }
+
+    ~SkeletonManager() {
+        combatAttributes.takingDamage -= TakingDamage;
+        combatAttributes.death -= Death;
     }
     
     // private void OnDrawGizmos() {
