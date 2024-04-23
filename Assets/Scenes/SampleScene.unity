@@ -391,7 +391,7 @@ GameObject:
   - component: {fileID: 42839630}
   - component: {fileID: 42839629}
   - component: {fileID: 42839628}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1708,8 +1708,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3430f3ff2029442db1cd0b257c0413ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  verticalSensitivity: 800
-  horizontalSensitivity: 800
+  verticalSensitivity: 111
+  horizontalSensitivity: 111
   lerpRatio: 0.3
   playerTransform: {fileID: 767811830}
   obstacle:
@@ -2121,7 +2121,7 @@ GameObject:
   - component: {fileID: 503721761}
   - component: {fileID: 503721760}
   - component: {fileID: 503721759}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4036,7 +4036,7 @@ Transform:
   m_GameObject: {fileID: 1495891379}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.24612397, z: -0, w: 0.96923834}
-  m_LocalPosition: {x: -18.37, y: 27.804283, z: -20.44}
+  m_LocalPosition: {x: -1.09, y: 27.804283, z: -10.5}
   m_LocalScale: {x: 0.22799999, y: 0.22799999, z: 0.22799999}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -4696,7 +4696,7 @@ GameObject:
   - component: {fileID: 1658122408}
   - component: {fileID: 1658122407}
   - component: {fileID: 1658122406}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Cube (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -15,7 +15,6 @@ public class CameraScript : MonoBehaviour {
     private Camera camera;
     
     private float cameraDistance;
-    private float actualCameraDistance;
 
     private float axisY;
     private float axisX;
@@ -23,7 +22,6 @@ public class CameraScript : MonoBehaviour {
     private void Start() {
         camera = GetComponent<Camera>();
         Cursor.lockState = CursorLockMode.Locked;
-        actualCameraDistance = cameraDistance;
     }
     
     private void LateUpdate() {
@@ -37,26 +35,26 @@ public class CameraScript : MonoBehaviour {
         Quaternion newRotation = Quaternion.Euler(axisY, axisX, 0f);
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, lerpRatio);
         
-        Vector3 position = playerTransform.position - transform.forward * actualCameraDistance;
-        
-        bool isHittingWall = Physics.Raycast(
-            playerTransform.position,
-            position - playerTransform.position,
-            actualCameraDistance,
-            obstacle);
-        
+        Vector3 position = playerTransform.position - transform.forward * cameraDistance;
+        transform.position = AdjustCameraPosition(playerTransform.position, position);
+    }
+    
+    private Vector3 AdjustCameraPosition(Vector3 origin, Vector3 targetPosition) {
+        if (Physics.Raycast(origin, targetPosition - origin, out RaycastHit hit, cameraDistance, obstacle)) {
+            return hit.point + hit.normal * 0.3f;
+        }
+
         for (int i = 0; i < 8; i++) {
             Vector3 direction = Quaternion.Euler(0, 0, i * 45) * Vector3.up;
-            Ray ray = new Ray(transform.position, transform.rotation * direction);
-            if (Physics.Raycast(ray, 0.3f, obstacle) || isHittingWall) {
-                actualCameraDistance = cameraDistance * 0.7f;
-                position = playerTransform.position - transform.forward * actualCameraDistance;
-                break;
+            Vector3 rayDir = transform.rotation * direction;
+            Ray ray = new Ray(targetPosition, rayDir);
+            Debug.DrawRay(targetPosition, rayDir, Color.red, 0.2f);
+            if (Physics.Raycast(ray, out RaycastHit hit2, 0.2f, obstacle)) {
+                return hit2.point - rayDir.normalized * 0.19f;
             }
-            actualCameraDistance = cameraDistance;
         }
-        
-        transform.position = position;
+
+        return targetPosition;
     }
     
     // private void OnDrawGizmos() {
