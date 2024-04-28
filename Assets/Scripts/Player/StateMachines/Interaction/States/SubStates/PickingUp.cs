@@ -31,6 +31,7 @@ namespace Player.StateMachines.Interaction.States.SubStates {
         public override void Exit() {
             interactionStateMachine.SetAnimBool(interactionStateMachine.IsPickingUpBool, false);
             interactionStateMachine.DestroyCurrentObject();
+            //interactionStateMachine.cur
         }
 
         private void EndOfPickingUpAnim() {

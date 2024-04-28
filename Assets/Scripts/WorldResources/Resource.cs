@@ -1,12 +1,14 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
-namespace ScriptableObjects.WorldResources {
+namespace WorldResources {
     
     
     public abstract class Resource : ScriptableObject {
         [SerializeField] protected Sprite _icon;
         [SerializeField] protected string _name;
+        [SerializeField] private Progress.Item obj;
 
         private void Awake() {
             OnCreate();
