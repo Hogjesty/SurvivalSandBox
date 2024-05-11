@@ -1,6 +1,8 @@
+using Inventory;
 using Player.StateMachines.Interaction.States.SubStates;
 using UnityEngine;
 using TMPro;
+using Unity.VisualScripting.Dependencies.Sqlite;
 
 namespace Player.StateMachines.Interaction {
     public class InteractionStateMachine : StateMachine {
@@ -15,8 +17,9 @@ namespace Player.StateMachines.Interaction {
         [SerializeField] private Camera mainCamera;
         [SerializeField] private TextMeshProUGUI interactPopupText;
         [SerializeField] private Animator playerAnimator;
+        [SerializeField] private PlayerInventory playerInventory;
 
-        public GameObject currentObject;
+        [HideInInspector] public GameObject currentObject;
 
         private void Awake() {
             idleState = new Idle(this);
@@ -37,6 +40,7 @@ namespace Player.StateMachines.Interaction {
         public Transform GetStartRayPoint => startRayPoint;
         public Camera GetMainCamera => mainCamera;
         public TextMeshProUGUI GetInteractPopupText => interactPopupText;
+        public PlayerInventory GetPlayerInventory => playerInventory;
         
         private void OnGUI() {
             GUILayout.BeginArea(new Rect(10f, 110f, 400f, 100f));

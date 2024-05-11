@@ -1,3 +1,4 @@
+using Inventory;
 using Player.AnimationsEvents;
 using UnityEngine;
 
@@ -30,8 +31,8 @@ namespace Player.StateMachines.Interaction.States.SubStates {
 
         public override void Exit() {
             interactionStateMachine.SetAnimBool(interactionStateMachine.IsPickingUpBool, false);
+            interactionStateMachine.GetPlayerInventory.TryToAddItem(interactionStateMachine.currentObject.GetComponent<WorldItem>()); 
             interactionStateMachine.DestroyCurrentObject();
-            //interactionStateMachine.cur
         }
 
         private void EndOfPickingUpAnim() {
