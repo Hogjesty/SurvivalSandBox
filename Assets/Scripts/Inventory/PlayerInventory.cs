@@ -1,19 +1,35 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 namespace Inventory {
     public class PlayerInventory : MonoBehaviour {
+        [SerializeField] private Transform inventory;
         [SerializeField] private Transform inventoryGrid;
         [SerializeField] private GameObject cellPrefab;
         [SerializeField] private int initInventorySize;
 
-        private List<InventoryItem> storage = new List<InventoryItem>();
+        private List<InventoryItem> storage = new();
+
+        private bool isInventoryOpen;
 
         private void Start() {
             for (int i = 0; i < initInventorySize; i++) {
-                CellUI instantiate = Instantiate(cellPrefab, inventoryGrid).GetComponent<CellUI>();
-                storage.Add(new InventoryItem(instantiate, null, 0));
+                CellUI cell = Instantiate(cellPrefab, inventoryGrid).GetComponent<CellUI>();
+                InventoryItem inventoryItem = new (cell, null, 0);
+                cell.inventoryItem = inventoryItem;
+                storage.Add(inventoryItem);
+            }
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        private void Update() {
+            if (Input.GetKeyDown(KeyCode.Tab)) {
+                isInventoryOpen = !isInventoryOpen;
+                inventory.gameObject.SetActive(isInventoryOpen);
+                Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
+                Cursor.visible = isInventoryOpen;
             }
         }
 
@@ -53,5 +69,7 @@ namespace Inventory {
             item.cellUI.CountText.text = item.amount.ToString();
             item.cellUI.Image.sprite = newItem.ResourceSo.Icon;
         }
+        
+        
     }
 }

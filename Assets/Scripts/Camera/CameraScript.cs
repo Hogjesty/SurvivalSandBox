@@ -21,7 +21,6 @@ public class CameraScript : MonoBehaviour {
 
     private void Start() {
         camera = GetComponent<Camera>();
-        Cursor.lockState = CursorLockMode.Locked;
     }
     
     private void LateUpdate() {
