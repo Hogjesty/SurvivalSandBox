@@ -17,10 +17,12 @@ namespace Inventory {
         private void Start() {
             for (int i = 0; i < initInventorySize; i++) {
                 CellUI cell = Instantiate(cellPrefab, inventoryGrid).GetComponent<CellUI>();
-                InventoryItem inventoryItem = new (cell, null, 0);
+                cell.gameObject.name = "Cell" + i;
+                InventoryItem inventoryItem = new(cell, null, 0);
                 cell.inventoryItem = inventoryItem;
                 storage.Add(inventoryItem);
             }
+
             Cursor.lockState = CursorLockMode.Locked;
         }
 
@@ -38,6 +40,7 @@ namespace Inventory {
                 if (item.resourceSo is null || item.resourceSo.MaxStackSize == 1) {
                     continue;
                 }
+
                 if (item.resourceSo.ResourceType == newItem.ResourceSo.ResourceType) {
                     if (item.amount < item.resourceSo.MaxStackSize) {
                         AddItem(item, newItem);
@@ -45,21 +48,21 @@ namespace Inventory {
                     }
                 }
             }
-            
+
             foreach (InventoryItem item in storage) {
                 if (item.resourceSo is null) {
                     AddItem(item, newItem);
                     return;
                 }
             }
-            
+
             print("Not enough space!");
         }
 
         private void AddItem(InventoryItem item, WorldItem newItem) {
             item.resourceSo = newItem.ResourceSo;
             item.amount += newItem.amount;
-            
+
             if (item.amount > item.resourceSo.MaxStackSize) {
                 newItem.amount = item.amount - item.resourceSo.MaxStackSize;
                 item.amount = item.resourceSo.MaxStackSize;
@@ -69,7 +72,5 @@ namespace Inventory {
             item.cellUI.CountText.text = item.amount.ToString();
             item.cellUI.Image.sprite = newItem.ResourceSo.Icon;
         }
-        
-        
     }
 }
