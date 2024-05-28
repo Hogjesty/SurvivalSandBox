@@ -1,46 +1,63 @@
-using System;
+using DG.Tweening;
 using Inventory;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 using Image = UnityEngine.UI.Image;
 
 public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
     [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private Image image;
+    [SerializeField] private Image hoverImage;
+    
     public InventoryItem inventoryItem;
 
-    private DragManager dragManager;
+    private InventoriesManager inventoriesManager;
 
     public Image Image => image;
     public TextMeshProUGUI CountText => countText;
 
+    public CellUI() {
+        inventoryItem = new InventoryItem(this, null, 0);
+    }
+
     private void Start() {
-        dragManager = FindObjectOfType<DragManager>();
+        inventoriesManager = FindObjectOfType<InventoriesManager>();
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
-        dragManager.lastHoveredCell = eventData.pointerEnter;
+        inventoriesManager.lastHoveredCell = eventData.pointerEnter;
+        Sequence mySequence = DOTween.Sequence();
+        mySequence.Append(transform.DOScale(1.04f, 0.05f));
+        mySequence.Append(transform.DOScale(1, 0.15f));
+        hoverImage.enabled = true;
     }
     
     public void OnPointerExit(PointerEventData eventData) {
-        dragManager.lastHoveredCell = null;
+        inventoriesManager.lastHoveredCell = null;
+        hoverImage.enabled = false;
     }
     
     public void OnBeginDrag(PointerEventData data) {
         if (inventoryItem.resourceSo is null) return;
-        dragManager.EnableWithNewImage(image.sprite);
+        inventoriesManager.EnableWithNewImage(image.sprite);
     }
 
     public void OnDrag(PointerEventData data) {
-        dragManager.SetPosition(data.position);
+        inventoriesManager.SetPosition(data.position);
     }
     
     public void OnEndDrag(PointerEventData data) {
-        dragManager.Disable();
-        if (dragManager.lastHoveredCell is not null) {
-            dragManager.OnDragEnd(this, dragManager.lastHoveredCell.GetComponent<CellUI>());
+        inventoriesManager.Disable();
+        if (inventoriesManager.lastHoveredCell is not null) {
+            inventoriesManager.OnDragEnd(this, inventoriesManager.lastHoveredCell.GetComponent<CellUI>());
+            AnimateDrop();
         }
+    }
+
+    private void AnimateDrop() {
+        Sequence mySequence = DOTween.Sequence();
+        mySequence.Append(inventoriesManager.lastHoveredCell.transform.DOScale(0.96f, 0.05f));
+        mySequence.Append(inventoriesManager.lastHoveredCell.transform.DOScale(1, 0.15f));
     }
 }

@@ -24,7 +24,7 @@ namespace Player.StateMachines.Movement {
 
         [HideInInspector] public float lastSpeed;
         [HideInInspector] public bool isShiftPressed;
-        
+
         private CharacterController characterController;
 
         public Idle idleState { get; private set; }
@@ -59,6 +59,11 @@ namespace Player.StateMachines.Movement {
             
             Vector3 globalMovingDirection = transform.TransformDirection(0, gravity, direction.normalized.magnitude * speed);
             characterController.Move(globalMovingDirection * Time.deltaTime);
+        }
+
+        public void SetEnabled(bool isEnabled) {
+            ChangeState(idleState);
+            enabled = isEnabled;
         }
 
         protected override BaseState GetInitialState() {

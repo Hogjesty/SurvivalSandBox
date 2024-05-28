@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Player.StateMachines.Movement;
 using UnityEngine;
 
 namespace Inventory {
@@ -9,6 +10,9 @@ namespace Inventory {
         [SerializeField] private Transform inventoryGrid;
         [SerializeField] private GameObject cellPrefab;
         [SerializeField] private int initInventorySize;
+        
+        [SerializeField] private CameraScript cameraScript;
+        [SerializeField] private MovementStateMachine movementStateMachine;
 
         private List<InventoryItem> storage = new();
 
@@ -18,9 +22,7 @@ namespace Inventory {
             for (int i = 0; i < initInventorySize; i++) {
                 CellUI cell = Instantiate(cellPrefab, inventoryGrid).GetComponent<CellUI>();
                 cell.gameObject.name = "Cell" + i;
-                InventoryItem inventoryItem = new(cell, null, 0);
-                cell.inventoryItem = inventoryItem;
-                storage.Add(inventoryItem);
+                storage.Add(cell.inventoryItem);
             }
 
             Cursor.lockState = CursorLockMode.Locked;
@@ -30,6 +32,8 @@ namespace Inventory {
             if (Input.GetKeyDown(KeyCode.Tab)) {
                 isInventoryOpen = !isInventoryOpen;
                 inventory.gameObject.SetActive(isInventoryOpen);
+                cameraScript.enabled = !isInventoryOpen;
+                movementStateMachine.SetEnabled(!isInventoryOpen);
                 Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
                 Cursor.visible = isInventoryOpen;
             }
@@ -71,6 +75,7 @@ namespace Inventory {
 
             item.cellUI.CountText.text = item.amount.ToString();
             item.cellUI.Image.sprite = newItem.ResourceSo.Icon;
+            item.cellUI.Image.enabled = true;
         }
     }
 }
