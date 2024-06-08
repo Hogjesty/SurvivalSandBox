@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Player.StateMachines.Movement.States.SubStates {
     public class Idle: AdaptiveGrounded  {
-        public Idle(StateMachine stateMachine) : base("Idle", stateMachine) {
+        public Idle(StateMachine stateMachine) : base(stateMachine) {
         }
 
         public override void Enter() {

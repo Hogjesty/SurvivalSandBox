@@ -4,7 +4,7 @@ namespace Player.StateMachines.Interaction.States.SubStates {
     public class Idle : BaseState {
         protected readonly InteractionStateMachine interactionStateMachine;
         
-        public Idle(StateMachine stateMachine) : base("Idle", stateMachine) {
+        public Idle(StateMachine stateMachine) : base(stateMachine) {
             interactionStateMachine = (InteractionStateMachine)this.stateMachine;
         }
 
@@ -14,27 +14,31 @@ namespace Player.StateMachines.Interaction.States.SubStates {
 
         public override void Update() {
             bool raycast = Physics.Raycast(
-                interactionStateMachine.GetStartRayPoint.position,
-                interactionStateMachine.GetMainCamera.transform.forward,
+                interactionStateMachine.StartRayPoint.position,
+                interactionStateMachine.MainCamera.transform.forward,
                 out RaycastHit hitInfo,
                 2f,
-                interactionStateMachine.GetLayerMask
+                interactionStateMachine.LayerMask
             );
             if (raycast) {
                 Vector3 objPos = hitInfo.transform.position;
-                Vector3 objPosPixels = interactionStateMachine.GetMainCamera.WorldToViewportPoint(objPos);
+                Vector3 objPosPixels = interactionStateMachine.MainCamera.WorldToViewportPoint(objPos);
                 objPosPixels.y += Screen.height * 0.1f;
-                interactionStateMachine.GetInteractPopupText.transform.localPosition = objPosPixels;
-                interactionStateMachine.GetInteractPopupText.gameObject.SetActive(true);
+                interactionStateMachine.InteractPopupText.transform.localPosition = objPosPixels;
+                interactionStateMachine.InteractPopupText.gameObject.SetActive(true);
                 
                 if (Input.GetKeyDown(KeyCode.E)) {
                     interactionStateMachine.currentObject = hitInfo.transform.gameObject;
-                    interactionStateMachine.ChangeState(interactionStateMachine.pickingUpState);
-                    interactionStateMachine.GetInteractPopupText.gameObject.SetActive(false);
+                    if (interactionStateMachine.currentObject.CompareTag("Inventory")) {
+                        interactionStateMachine.ChangeState(interactionStateMachine.openingState);
+                    } else {
+                        interactionStateMachine.ChangeState(interactionStateMachine.pickingUpState);
+                    }
+                    interactionStateMachine.InteractPopupText.gameObject.SetActive(false);
                 }
                 
             } else {
-                interactionStateMachine.GetInteractPopupText.gameObject.SetActive(false);
+                interactionStateMachine.InteractPopupText.gameObject.SetActive(false);
             }
         }
 

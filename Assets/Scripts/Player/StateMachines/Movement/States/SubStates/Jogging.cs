@@ -5,7 +5,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private Vector3 direction;
         private float currentSpeed;
 
-        public Jogging(StateMachine stateMachine) : base("Jogging", stateMachine) {
+        public Jogging(StateMachine stateMachine) : base(stateMachine) {
         }
         
         public override void Enter() {

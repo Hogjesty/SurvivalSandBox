@@ -9,8 +9,11 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private Image image;
     [SerializeField] private Image hoverImage;
+    [SerializeField] private Image spriteMask;
     
     public InventoryItem inventoryItem;
+    public ItemData[] storage;
+    public int index;
 
     private InventoriesManager inventoriesManager;
 
@@ -40,7 +43,14 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     
     public void OnBeginDrag(PointerEventData data) {
         if (inventoryItem.resourceSo is null) return;
-        inventoriesManager.EnableWithNewImage(image.sprite);
+        int draggedAmount = inventoryItem.amount;
+        if (data.button == PointerEventData.InputButton.Right) {
+            if (draggedAmount == 1) return;
+            draggedAmount = Mathf.CeilToInt(inventoryItem.amount / 2.0f);
+        }
+
+        spriteMask.enabled = true;
+        inventoriesManager.EnableDraggedImageWithNewParams(image.sprite, draggedAmount);
     }
 
     public void OnDrag(PointerEventData data) {
@@ -48,11 +58,23 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
     
     public void OnEndDrag(PointerEventData data) {
-        inventoriesManager.Disable();
+        inventoriesManager.DisableDraggedImage();
+        spriteMask.enabled = false;
         if (inventoriesManager.lastHoveredCell is not null) {
-            inventoriesManager.OnDragEnd(this, inventoriesManager.lastHoveredCell.GetComponent<CellUI>());
+            CellUI destinationCell = inventoriesManager.lastHoveredCell.GetComponent<CellUI>();
+            if (data.button == PointerEventData.InputButton.Right) {
+                inventoriesManager.OnRightClickDragEnd(this, destinationCell);
+            } else {
+                inventoriesManager.OnDragEnd(this, destinationCell);
+            }
             AnimateDrop();
         }
+    }
+
+    public void Redraw() {
+        image.sprite = inventoryItem.resourceSo ? inventoryItem.resourceSo.Icon : null;
+        image.enabled = inventoryItem.resourceSo;
+        countText.text = inventoryItem.resourceSo ? inventoryItem.amount.ToString() : null;
     }
 
     private void AnimateDrop() {

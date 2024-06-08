@@ -2,7 +2,7 @@ namespace Player.StateMachines.Movement.States {
     public class Freefall : BaseState {
         protected readonly MovementStateMachine movementStateMachine;
         
-        protected Freefall(string name, StateMachine stateMachine) : base(name, stateMachine) {
+        protected Freefall(StateMachine stateMachine) : base(stateMachine) {
             movementStateMachine = (MovementStateMachine) this.stateMachine;
         }
 

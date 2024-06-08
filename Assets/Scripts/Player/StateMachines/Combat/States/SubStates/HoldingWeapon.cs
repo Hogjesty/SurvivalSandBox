@@ -4,7 +4,7 @@ namespace Player.StateMachines.Combat.States.SubStates {
     public class HoldingWeapon : BaseState {
         protected readonly CombatStateMachine combatStateMachine;
         
-        public HoldingWeapon(StateMachine stateMachine) : base("HoldingWeapon", stateMachine) {
+        public HoldingWeapon(StateMachine stateMachine) : base(stateMachine) {
             combatStateMachine = (CombatStateMachine) this.stateMachine;
         }
 

@@ -4,7 +4,7 @@ namespace Player.StateMachines.Combat.States.SubStates {
     public class Idle : BaseState {
         protected readonly CombatStateMachine movementStateMachine;
         
-        public Idle(StateMachine stateMachine) : base("Idle", stateMachine) {
+        public Idle(StateMachine stateMachine) : base(stateMachine) {
             movementStateMachine = (CombatStateMachine) this.stateMachine;
         }
 

@@ -1,8 +1,7 @@
-using Inventory;
-using Player.StateMachines.Interaction.States.SubStates;
-using UnityEngine;
 using TMPro;
-using Unity.VisualScripting.Dependencies.Sqlite;
+using Inventory;
+using UnityEngine;
+using Player.StateMachines.Interaction.States.SubStates;
 
 namespace Player.StateMachines.Interaction {
     public class InteractionStateMachine : StateMachine {
@@ -11,19 +10,21 @@ namespace Player.StateMachines.Interaction {
         
         public Idle idleState { get; private set; }
         public PickingUp pickingUpState { get; private set; }
+        public Opening openingState { get; private set; }
 
         [SerializeField] private LayerMask layerMask;
         [SerializeField] private Transform startRayPoint;
         [SerializeField] private Camera mainCamera;
         [SerializeField] private TextMeshProUGUI interactPopupText;
         [SerializeField] private Animator playerAnimator;
-        [SerializeField] private PlayerInventory playerInventory;
+        [SerializeField] private InventoriesManager inventoriesManager;
 
         [HideInInspector] public GameObject currentObject;
 
         private void Awake() {
             idleState = new Idle(this);
             pickingUpState = new PickingUp(this);
+            openingState = new Opening(this);
         }
         
         protected override BaseState GetInitialState() {
@@ -36,11 +37,11 @@ namespace Player.StateMachines.Interaction {
 
         public void DestroyCurrentObject() => Destroy(currentObject);
 
-        public LayerMask GetLayerMask => layerMask;
-        public Transform GetStartRayPoint => startRayPoint;
-        public Camera GetMainCamera => mainCamera;
-        public TextMeshProUGUI GetInteractPopupText => interactPopupText;
-        public PlayerInventory GetPlayerInventory => playerInventory;
+        public LayerMask LayerMask => layerMask;
+        public Transform StartRayPoint => startRayPoint;
+        public Camera MainCamera => mainCamera;
+        public TextMeshProUGUI InteractPopupText => interactPopupText;
+        public InventoriesManager InventoriesManager => inventoriesManager;
         
         private void OnGUI() {
             GUILayout.BeginArea(new Rect(10f, 110f, 400f, 100f));

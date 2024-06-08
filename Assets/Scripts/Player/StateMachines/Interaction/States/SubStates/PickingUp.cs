@@ -8,7 +8,7 @@ namespace Player.StateMachines.Interaction.States.SubStates {
         
         private bool isAnimationEnded;
         
-        public PickingUp(StateMachine stateMachine) : base("PickingUp", stateMachine) {
+        public PickingUp(StateMachine stateMachine) : base(stateMachine) {
             interactionStateMachine = (InteractionStateMachine)this.stateMachine;
             PlayerAnimationsEvents.endOfPickingUpAnim += EndOfPickingUpAnim;
         }
@@ -31,7 +31,7 @@ namespace Player.StateMachines.Interaction.States.SubStates {
 
         public override void Exit() {
             interactionStateMachine.SetAnimBool(interactionStateMachine.IsPickingUpBool, false);
-            interactionStateMachine.GetPlayerInventory.TryToAddItem(interactionStateMachine.currentObject.GetComponent<WorldItem>()); 
+            interactionStateMachine.InventoriesManager.TryToAddItemIntoPlayerInventory(interactionStateMachine.currentObject.GetComponent<WorldItem>()); 
             interactionStateMachine.DestroyCurrentObject();
         }
 

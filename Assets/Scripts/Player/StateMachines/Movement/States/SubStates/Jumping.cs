@@ -11,7 +11,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private float velocity;
         private float targetSpeed;
         
-        public Jumping(StateMachine stateMachine) : base("Jumping", stateMachine) {
+        public Jumping(StateMachine stateMachine) : base(stateMachine) {
         }
 
         public override void Enter() {

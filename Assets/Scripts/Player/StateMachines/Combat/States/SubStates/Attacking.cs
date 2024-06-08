@@ -9,7 +9,7 @@ namespace Player.StateMachines.Combat.States.SubStates {
         private bool isAnimationEnded;
         private float hitRadius;
         
-        public Attacking(StateMachine stateMachine) : base("Attacking", stateMachine) {
+        public Attacking(StateMachine stateMachine) : base(stateMachine) {
             combatStateMachine = (CombatStateMachine) this.stateMachine;
             PlayerAnimationsEvents.endOfAttackingAnim += EndOfAttackingAnim;
             PlayerAnimationsEvents.hitPointAttackingAnim += HitPointAttackingAnim;

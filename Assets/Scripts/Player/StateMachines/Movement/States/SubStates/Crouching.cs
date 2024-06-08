@@ -4,7 +4,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
     public class Crouching : Grounded {
         private Vector3 direction;
         
-        public Crouching(StateMachine stateMachine) : base("Crouching", stateMachine) {
+        public Crouching(StateMachine stateMachine) : base(stateMachine) {
         }
 
         public override void Enter() {

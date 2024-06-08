@@ -9,7 +9,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private float velocity;
         private float targetSpeed;
         
-        public Falling(StateMachine stateMachine) : base("Falling", stateMachine) {
+        public Falling(StateMachine stateMachine) : base(stateMachine) {
         }
 
         public override void Enter() {

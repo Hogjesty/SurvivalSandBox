@@ -4,8 +4,8 @@ namespace Player.StateMachines {
 
         protected readonly StateMachine stateMachine;
 
-        protected BaseState(string name, StateMachine stateMachine) {
-            this.name = name;
+        protected BaseState(StateMachine stateMachine) {
+            name = GetType().Name;
             this.stateMachine = stateMachine;
         }
 

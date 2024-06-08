@@ -1,9 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using Cursor = UnityEngine.Cursor;
 
 public class CameraScript : MonoBehaviour {
     [SerializeField] private float verticalSensitivity;

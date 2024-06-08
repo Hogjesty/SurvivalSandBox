@@ -904,7 +904,7 @@ GameObject:
   - component: {fileID: 1454709099057457200}
   - component: {fileID: 9030547270513521717}
   - component: {fileID: 2278846537178883510}
-  - component: {fileID: 6954186523270618805}
+  - component: {fileID: 6251955223527034324}
   m_Layer: 2
   m_Name: Player
   m_TagString: Player
@@ -1019,6 +1019,7 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   interactPopupText: {fileID: 0}
   playerAnimator: {fileID: 1263381924455128816}
+  inventoriesManager: {fileID: 0}
   currentObject: {fileID: 0}
 --- !u!114 &2278846537178883510
 MonoBehaviour:
@@ -1033,7 +1034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
---- !u!114 &6954186523270618805
+--- !u!114 &6251955223527034324
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1042,10 +1043,50 @@ MonoBehaviour:
   m_GameObject: {fileID: 2644974641594602498}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 945a0b5cae1a48ebb1f267746b951a16, type: 3}
+  m_Script: {fileID: 11500000, guid: 16bac1b7fd9446c1873732be7ed5a09e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  storage: []
+  storage:
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
+  - resourceSo: {fileID: 0}
+    amount: 0
 --- !u!1 &2795237858804225544
 GameObject:
   m_ObjectHideFlags: 0

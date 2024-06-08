@@ -5,7 +5,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private Vector3 direction;
         private float currentSpeed;
         
-        public Sneaking(StateMachine stateMachine) : base("Sneaking", stateMachine) {
+        public Sneaking(StateMachine stateMachine) : base(stateMachine) {
         }
 
         public override void Enter() {

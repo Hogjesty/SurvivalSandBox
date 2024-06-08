@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Player.StateMachines.Movement.States {
     public class AdaptiveGrounded : Grounded {
         
-        protected AdaptiveGrounded(string name, StateMachine stateMachine) : base(name, stateMachine) {
+        protected AdaptiveGrounded(StateMachine stateMachine) : base(stateMachine) {
         }
         
         public override void Enter() {

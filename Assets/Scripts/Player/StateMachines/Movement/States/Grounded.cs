@@ -5,7 +5,7 @@ namespace Player.StateMachines.Movement.States {
     public class Grounded : BaseState {
         protected readonly MovementStateMachine movementStateMachine;
 
-        protected Grounded(string name, StateMachine stateMachine) : base(name, stateMachine) {
+        protected Grounded(StateMachine stateMachine) : base(stateMachine) {
             movementStateMachine = (MovementStateMachine) this.stateMachine;
         }
 

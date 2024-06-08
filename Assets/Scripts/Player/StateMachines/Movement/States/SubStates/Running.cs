@@ -6,7 +6,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private Vector3 direction;
         private float currentSpeed;
         
-        public Running(StateMachine stateMachine) : base("Running", stateMachine) {
+        public Running(StateMachine stateMachine) : base(stateMachine) {
         }
 
         public override void Enter() {

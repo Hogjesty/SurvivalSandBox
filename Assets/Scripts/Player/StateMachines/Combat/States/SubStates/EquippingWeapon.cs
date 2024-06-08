@@ -7,7 +7,7 @@ namespace Player.StateMachines.Combat.States.SubStates {
 
         private bool isAnimationEnded;
         
-        public EquippingWeapon(StateMachine stateMachine) : base("EquippingWeapon", stateMachine) {
+        public EquippingWeapon(StateMachine stateMachine) : base(stateMachine) {
             combatStateMachine = (CombatStateMachine) this.stateMachine;
             PlayerAnimationsEvents.endOfWeaponEquippingAnim += EndOfWeaponEquippingAnim;
             PlayerAnimationsEvents.pointOfWeaponEquippingAnim += PointOfWeaponEquippingAnim;
