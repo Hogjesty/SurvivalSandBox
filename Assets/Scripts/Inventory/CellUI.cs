@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using Inventory;
 using TMPro;
@@ -5,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Image = UnityEngine.UI.Image;
 
-public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler {
+public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerClickHandler {
     [SerializeField] private TextMeshProUGUI countText;
     [SerializeField] private Image image;
     [SerializeField] private Image hoverImage;
@@ -34,6 +35,9 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         mySequence.Append(transform.DOScale(1.04f, 0.05f));
         mySequence.Append(transform.DOScale(1, 0.15f));
         hoverImage.enabled = true;
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse0)) {
+            inventoriesManager.TransferItemToAnotherInventory(this);
+        }
     }
     
     public void OnPointerExit(PointerEventData eventData) {
@@ -42,7 +46,7 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
     
     public void OnBeginDrag(PointerEventData data) {
-        if (inventoryItem.resourceSo is null) return;
+        if (inventoryItem.resourceSo is null || Input.GetKey(KeyCode.LeftShift)) return;
         int draggedAmount = inventoryItem.amount;
         if (data.button == PointerEventData.InputButton.Right) {
             if (draggedAmount == 1) return;
@@ -54,20 +58,27 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
 
     public void OnDrag(PointerEventData data) {
-        inventoriesManager.SetPosition(data.position);
+        inventoriesManager.SetDraggedImagePosition(data.position);
     }
     
     public void OnEndDrag(PointerEventData data) {
+        if (inventoryItem.resourceSo is null || Input.GetKey(KeyCode.LeftShift)) return;
         inventoriesManager.DisableDraggedImage();
         spriteMask.enabled = false;
         if (inventoriesManager.lastHoveredCell is not null) {
-            CellUI destinationCell = inventoriesManager.lastHoveredCell.GetComponent<CellUI>();
+            CellUI destinationCell = inventoriesManager.lastHoveredCell.GetComponent<CellUI>();//todo перенести ластХоверед під капот методів???
             if (data.button == PointerEventData.InputButton.Right) {
                 inventoriesManager.OnRightClickDragEnd(this, destinationCell);
             } else {
                 inventoriesManager.OnDragEnd(this, destinationCell);
             }
             AnimateDrop();
+        }
+    }
+    
+    public void OnPointerClick(PointerEventData eventData) {
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            inventoriesManager.TransferItemToAnotherInventory(this);
         }
     }
 

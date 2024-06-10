@@ -16,6 +16,8 @@ namespace Inventory {
         [SerializeField] private HotbarStorage hotbarStorage;
 
         [HideInInspector] public GameObject lastHoveredCell;
+
+        private InventoryUI currentActiveInventory;
         
         private bool isInventoryOpen;
 
@@ -33,6 +35,7 @@ namespace Inventory {
                 if (!isInventoryOpen) {
                     draggedImage.gameObject.SetActive(false);
                     chestInventory.InventoryUIObject.SetActive(false);
+                    currentActiveInventory = null;
                 } else {
                     playerInventory.ClearUI();
                     FillInventoryUI(playerStorage.Storage, playerInventory, StorageType.Player);
@@ -45,6 +48,7 @@ namespace Inventory {
                 playerInventory.InventoryUIObject.SetActive(false);
                 draggedImage.gameObject.SetActive(false);
                 chestInventory.InventoryUIObject.SetActive(false);
+                currentActiveInventory = null;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
@@ -61,7 +65,7 @@ namespace Inventory {
             draggedImage.gameObject.SetActive(true);
         }
 
-        public void SetPosition(Vector2 vector2) {
+        public void SetDraggedImagePosition(Vector2 vector2) {
             draggedImage.transform.position = vector2;
         }
 
@@ -117,7 +121,7 @@ namespace Inventory {
             TransferAmountOfItem(departmentCell, destinationCell, newAmount);
         }
 
-        public void SwapItems(CellUI departmentCell, CellUI destinationCell) {
+        private void SwapItems(CellUI departmentCell, CellUI destinationCell) {
             ResourceSO tempResourceSo = destinationCell.inventoryItem.resourceSo;
             int tempAmount = destinationCell.inventoryItem.amount;
             Sprite tempSprite = destinationCell.Image.sprite;
@@ -140,7 +144,7 @@ namespace Inventory {
             departmentCell.storage[departmentCell.index].amount = tempAmount;
         }
 
-        public void TransferItem(CellUI departmentCell, CellUI destinationCell) {
+        private void TransferItem(CellUI departmentCell, CellUI destinationCell) {
             destinationCell.inventoryItem.resourceSo = departmentCell.inventoryItem.resourceSo;
             destinationCell.inventoryItem.amount = departmentCell.inventoryItem.amount;
             destinationCell.Image.sprite = departmentCell.Image.sprite;
@@ -152,7 +156,7 @@ namespace Inventory {
             ResetCell(departmentCell);
         }
 
-        public void TransferAmountOfItem(CellUI departmentCell, CellUI destinationCell, int amount) {
+        private void TransferAmountOfItem(CellUI departmentCell, CellUI destinationCell, int amount) {
             ResourceSO resourceSo = departmentCell.inventoryItem.resourceSo;
             destinationCell.inventoryItem.resourceSo = resourceSo;
             destinationCell.Image.sprite = departmentCell.Image.sprite;
@@ -208,9 +212,60 @@ namespace Inventory {
             
             if (storageType == StorageType.Chest) {
                 chestInventory.InventoryUIObject.SetActive(true);
+                currentActiveInventory = chestInventory;
                 chestInventory.ClearUI();
                 FillInventoryUI(storage, chestInventory, storageType);
             }
+        }
+
+        public void TransferItemToAnotherInventory(CellUI departmentCell) {
+            if (currentActiveInventory is null) {
+                return;
+            }
+
+            bool isPlayerInventory = !currentActiveInventory.UIItems.Contains(departmentCell.inventoryItem);
+            TryToTransferItemToAnotherInventory(departmentCell, isPlayerInventory ? currentActiveInventory : playerInventory);
+        }
+
+        private void TryToTransferItemToAnotherInventory(CellUI departmentCell, InventoryUI destinationInventory) {
+            foreach (InventoryItem destinationCell in destinationInventory.UIItems) {
+                if (destinationCell.resourceSo is null || destinationCell.resourceSo.MaxStackSize == 1) {
+                    continue;
+                }
+
+                if (destinationCell.resourceSo.ResourceType == departmentCell.inventoryItem.resourceSo.ResourceType) {
+                    if (destinationCell.amount < destinationCell.resourceSo.MaxStackSize) {
+                        // Calculate how much we can add
+                        int availableSpace = destinationCell.resourceSo.MaxStackSize - destinationCell.amount;
+                        int transferAmount = Math.Min(availableSpace, departmentCell.inventoryItem.amount);
+
+                        // Transfer items
+                        destinationCell.amount += transferAmount;
+                        departmentCell.inventoryItem.amount -= transferAmount;
+                        departmentCell.Redraw();
+                        destinationCell.cellUI.Redraw();
+
+                        // Check if department cell is empty now and reset if true
+                        if (departmentCell.inventoryItem.amount <= 0) {
+                            ResetCell(departmentCell);
+                        }
+
+                        if (departmentCell.inventoryItem.amount == 0) {
+                            return; // All items have been transferred successfully
+                        }
+                        return;
+                    }
+                }
+            }
+
+            foreach (InventoryItem item in playerInventory.UIItems) {
+                if (item.resourceSo is null) {
+                    TransferItem(departmentCell, item.cellUI);
+                    return;
+                }
+            }
+
+            print("Not enough space!");
         }
 
         private void FillInventoryUI(ItemData[] storage, InventoryUI inventoryUI, StorageType storageType) {
