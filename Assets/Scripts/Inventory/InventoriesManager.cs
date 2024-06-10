@@ -89,16 +89,11 @@ namespace Inventory {
                 if (newAmount > destinationCell.inventoryItem.resourceSo.MaxStackSize) {
                     int departmentAmount = newAmount - destinationCell.inventoryItem.resourceSo.MaxStackSize;
                     newAmount = destinationCell.inventoryItem.resourceSo.MaxStackSize;
-                    departmentCell.inventoryItem.amount = departmentAmount;
-                    departmentCell.CountText.text = departmentAmount.ToString();
-                    departmentCell.storage[departmentCell.index].amount = departmentAmount;
-                } else {
-                    ResetCell(departmentCell);
-                }
+                    SetCell( departmentCell, departmentCell.inventoryItem.resourceSo, departmentAmount);
+                } 
+                else ResetCell(departmentCell);
                 
-                destinationCell.inventoryItem.amount = newAmount;
-                destinationCell.CountText.text = newAmount.ToString();
-                destinationCell.storage[destinationCell.index].amount = newAmount;
+                SetCell(destinationCell,destinationCell.inventoryItem.resourceSo, newAmount);
                 return;
             }
 
@@ -124,59 +119,28 @@ namespace Inventory {
         private void SwapItems(CellUI departmentCell, CellUI destinationCell) {
             ResourceSO tempResourceSo = destinationCell.inventoryItem.resourceSo;
             int tempAmount = destinationCell.inventoryItem.amount;
-            Sprite tempSprite = destinationCell.Image.sprite;
-            string tempText = destinationCell.CountText.text;
-            
-            destinationCell.inventoryItem.resourceSo = departmentCell.inventoryItem.resourceSo;
-            destinationCell.inventoryItem.amount = departmentCell.inventoryItem.amount;
-            destinationCell.Image.sprite = departmentCell.Image.sprite;
-            destinationCell.Image.enabled = true;
-            destinationCell.CountText.text = departmentCell.CountText.text;
-            destinationCell.storage[destinationCell.index].resourceSo = departmentCell.inventoryItem.resourceSo;
-            destinationCell.storage[destinationCell.index].amount = departmentCell.inventoryItem.amount;
-
-            departmentCell.inventoryItem.resourceSo = tempResourceSo;
-            departmentCell.inventoryItem.amount = tempAmount;
-            departmentCell.Image.sprite = tempSprite;
-            departmentCell.Image.enabled = true;
-            departmentCell.CountText.text = tempText;
-            departmentCell.storage[departmentCell.index].resourceSo = tempResourceSo;
-            departmentCell.storage[departmentCell.index].amount = tempAmount;
+            SetCell(destinationCell, departmentCell.inventoryItem.resourceSo, departmentCell.inventoryItem.amount);
+            SetCell(departmentCell, tempResourceSo, tempAmount);
         }
-
+        
         private void TransferItem(CellUI departmentCell, CellUI destinationCell) {
-            destinationCell.inventoryItem.resourceSo = departmentCell.inventoryItem.resourceSo;
-            destinationCell.inventoryItem.amount = departmentCell.inventoryItem.amount;
-            destinationCell.Image.sprite = departmentCell.Image.sprite;
-            destinationCell.Image.enabled = true;
-            destinationCell.CountText.text = departmentCell.CountText.text;
-            destinationCell.storage[destinationCell.index].resourceSo = departmentCell.storage[departmentCell.index].resourceSo;
-            destinationCell.storage[destinationCell.index].amount = departmentCell.storage[departmentCell.index].amount;
-
+            SetCell(destinationCell, departmentCell.inventoryItem.resourceSo, departmentCell.inventoryItem.amount);
             ResetCell(departmentCell);
         }
 
         private void TransferAmountOfItem(CellUI departmentCell, CellUI destinationCell, int amount) {
             ResourceSO resourceSo = departmentCell.inventoryItem.resourceSo;
-            destinationCell.inventoryItem.resourceSo = resourceSo;
-            destinationCell.Image.sprite = departmentCell.Image.sprite;
-            destinationCell.Image.enabled = true;
-
             departmentCell.inventoryItem.amount -= amount;
-
             amount += destinationCell.inventoryItem.amount;
             if (amount > resourceSo.MaxStackSize) {
                 departmentCell.inventoryItem.amount += amount - resourceSo.MaxStackSize;
                 amount = resourceSo.MaxStackSize;
             }
-
-            departmentCell.CountText.text = departmentCell.inventoryItem.amount.ToString();
-            departmentCell.storage[departmentCell.index].amount = departmentCell.inventoryItem.amount;
-            destinationCell.CountText.text = amount.ToString();
-            destinationCell.inventoryItem.amount = amount;
-            destinationCell.storage[destinationCell.index].amount = amount;
-            destinationCell.storage[destinationCell.index].resourceSo = resourceSo;
+            SetCell(departmentCell, resourceSo, departmentCell.inventoryItem.amount);
+            SetCell(destinationCell,resourceSo,amount);
         }
+        
+        
         
         public void TryToAddItemIntoPlayerInventory(WorldItem newItem) {
             foreach (InventoryItem item in playerInventory.UIItems) {
@@ -283,7 +247,6 @@ namespace Inventory {
             if (lastHoveredCell is null) {
                 return;
             }
-
             CellUI departmentCell = lastHoveredCell.GetComponent<CellUI>();
 
             if (hotbarCell.inventoryItem.resourceSo is null) {
@@ -303,12 +266,8 @@ namespace Inventory {
                 item.amount = item.resourceSo.MaxStackSize;
                 TryToAddItemIntoPlayerInventory(newItem);
             }
-
-            item.cellUI.CountText.text = item.amount.ToString();
-            item.cellUI.Image.sprite = newItem.ResourceSo.Icon;
-            item.cellUI.Image.enabled = true;
-            item.cellUI.storage[item.cellUI.index].resourceSo = newItem.ResourceSo;
-            item.cellUI.storage[item.cellUI.index].amount = item.amount;
+            
+            SetCell(item.cellUI,item.resourceSo, item.amount);
         }
 
         private void ResetCell(CellUI cellUI) {
@@ -318,6 +277,16 @@ namespace Inventory {
             cellUI.CountText.text = null;
             cellUI.storage[cellUI.index].resourceSo = null;
             cellUI.storage[cellUI.index].amount = 0;
+        }
+        
+        private void SetCell(CellUI cellUI, ResourceSO resourceSo, int itemAmount, bool spriteState = true ) {
+            cellUI.inventoryItem.resourceSo = resourceSo;
+            cellUI.inventoryItem.amount = itemAmount;
+            cellUI.Image.sprite = resourceSo.Icon;
+            cellUI.Image.enabled = spriteState;
+            cellUI.CountText.text = itemAmount.ToString();
+            cellUI.storage[cellUI.index].resourceSo = resourceSo;
+            cellUI.storage[cellUI.index].amount = itemAmount;
         }
     }
 }
