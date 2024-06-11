@@ -14,6 +14,8 @@ namespace Inventory {
         
         [SerializeField] private PlayerStorage playerStorage;
         [SerializeField] private HotbarStorage hotbarStorage;
+        
+        [SerializeField] private CameraScript playerCamera;
 
         [HideInInspector] public GameObject lastHoveredCell;
 
@@ -40,6 +42,7 @@ namespace Inventory {
                     playerInventory.ClearUI();
                     FillInventoryUI(playerStorage.Storage, playerInventory, StorageType.Player);
                 }
+                playerCamera.isRotationFrozen = isInventoryOpen;
                 Cursor.lockState = isInventoryOpen ? CursorLockMode.None : CursorLockMode.Locked;
                 Cursor.visible = isInventoryOpen;
             }
@@ -49,6 +52,7 @@ namespace Inventory {
                 draggedImage.gameObject.SetActive(false);
                 chestInventory.InventoryUIObject.SetActive(false);
                 currentActiveInventory = null;
+                playerCamera.isRotationFrozen = false;
                 Cursor.lockState = CursorLockMode.Locked;
                 Cursor.visible = false;
             }
@@ -177,6 +181,7 @@ namespace Inventory {
             playerInventory.ClearUI();
             FillInventoryUI(playerStorage.Storage, playerInventory, StorageType.Player);
             isInventoryOpen = true;
+            playerCamera.isRotationFrozen = true;
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             

@@ -10,6 +10,7 @@ public class CameraScript : MonoBehaviour {
     private Camera camera;
     
     private float cameraDistance;
+    public bool isRotationFrozen;
 
     private float axisY;
     private float axisX;
@@ -19,9 +20,12 @@ public class CameraScript : MonoBehaviour {
     }
     
     private void LateUpdate() {
-        axisX += Input.GetAxis("Mouse X") * Time.deltaTime * verticalSensitivity;
-        axisY -= Input.GetAxis("Mouse Y") * Time.deltaTime * horizontalSensitivity;
-        float mouseWheel = Input.GetAxis("Mouse ScrollWheel") * -15;
+        float mouseWheel = 0;
+        if (!isRotationFrozen) {
+            axisX += Input.GetAxis("Mouse X") * Time.deltaTime * verticalSensitivity;
+            axisY -= Input.GetAxis("Mouse Y") * Time.deltaTime * horizontalSensitivity;
+            mouseWheel = Input.GetAxis("Mouse ScrollWheel") * -15;
+        }
         
         axisY = Mathf.Clamp(axisY, -85f, 85f);
         cameraDistance = Mathf.Clamp(cameraDistance + mouseWheel, 1, 30);
