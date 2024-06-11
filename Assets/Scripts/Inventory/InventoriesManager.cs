@@ -143,7 +143,7 @@ namespace Inventory {
         
         
         public void TryToAddItemIntoPlayerInventory(WorldItem newItem) {
-            foreach (InventoryItem item in playerInventory.UIItems) {
+            foreach (ItemData item in playerStorage.Storage) {
                 if (item.resourceSo is null || item.resourceSo.MaxStackSize == 1) {
                     continue;
                 }
@@ -151,14 +151,20 @@ namespace Inventory {
                 if (item.resourceSo.ResourceType == newItem.ResourceSo.ResourceType) {
                     if (item.amount < item.resourceSo.MaxStackSize) {
                         AddItem(item, newItem);
+                        if (isInventoryOpen) {
+                            FillInventoryUI(playerStorage.Storage, playerInventory, StorageType.Player);
+                        }
                         return;
                     }
                 }
             }
 
-            foreach (InventoryItem item in playerInventory.UIItems) {
+            foreach (ItemData item in playerStorage.Storage) {
                 if (item.resourceSo is null) {
                     AddItem(item, newItem);
+                    if (isInventoryOpen) {
+                        FillInventoryUI(playerStorage.Storage, playerInventory, StorageType.Player);
+                    }
                     return;
                 }
             }
@@ -250,7 +256,7 @@ namespace Inventory {
             SwapItems(departmentCell, hotbarCell);
         }
 
-        private void AddItem(InventoryItem item, WorldItem newItem) {
+        private void AddItem(ItemData item, WorldItem newItem) {
             item.resourceSo = newItem.ResourceSo;
             item.amount += newItem.amount;
 
@@ -259,8 +265,6 @@ namespace Inventory {
                 item.amount = item.resourceSo.MaxStackSize;
                 TryToAddItemIntoPlayerInventory(newItem);
             }
-            
-            SetCell(item.cellUI,item.resourceSo, item.amount);
         }
 
         private void ResetCell(CellUI cellUI) {
