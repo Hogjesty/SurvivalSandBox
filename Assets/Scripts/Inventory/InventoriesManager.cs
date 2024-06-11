@@ -199,30 +199,23 @@ namespace Inventory {
 
                 if (destinationCell.resourceSo.ResourceType == departmentCell.inventoryItem.resourceSo.ResourceType) {
                     if (destinationCell.amount < destinationCell.resourceSo.MaxStackSize) {
-                        // Calculate how much we can add
                         int availableSpace = destinationCell.resourceSo.MaxStackSize - destinationCell.amount;
                         int transferAmount = Math.Min(availableSpace, departmentCell.inventoryItem.amount);
-
-                        // Transfer items
-                        destinationCell.amount += transferAmount;
-                        departmentCell.inventoryItem.amount -= transferAmount;
-                        departmentCell.Redraw();
-                        destinationCell.cellUI.Redraw();
-
-                        // Check if department cell is empty now and reset if true
+                        
+                        SetCell(destinationCell.cellUI, destinationCell.resourceSo,destinationCell.amount + transferAmount);
+                        SetCell(departmentCell, departmentCell.inventoryItem.resourceSo,departmentCell.inventoryItem.amount - transferAmount);
+                        
                         if (departmentCell.inventoryItem.amount <= 0) {
                             ResetCell(departmentCell);
-                        }
-
-                        if (departmentCell.inventoryItem.amount == 0) {
-                            return; // All items have been transferred successfully
+                        } else {
+                            TryToTransferItemToAnotherInventory(departmentCell, destinationInventory);
                         }
                         return;
                     }
                 }
             }
 
-            foreach (InventoryItem item in playerInventory.UIItems) {
+            foreach (InventoryItem item in destinationInventory.UIItems) {
                 if (item.resourceSo is null) {
                     TransferItem(departmentCell, item.cellUI);
                     return;
@@ -279,14 +272,12 @@ namespace Inventory {
             cellUI.storage[cellUI.index].amount = 0;
         }
         
-        private void SetCell(CellUI cellUI, ResourceSO resourceSo, int itemAmount, bool spriteState = true ) {
+        private void SetCell(CellUI cellUI, ResourceSO resourceSo, int itemAmount) {
             cellUI.inventoryItem.resourceSo = resourceSo;
             cellUI.inventoryItem.amount = itemAmount;
-            cellUI.Image.sprite = resourceSo.Icon;
-            cellUI.Image.enabled = spriteState;
-            cellUI.CountText.text = itemAmount.ToString();
             cellUI.storage[cellUI.index].resourceSo = resourceSo;
             cellUI.storage[cellUI.index].amount = itemAmount;
+            cellUI.Redraw();
         }
     }
 }

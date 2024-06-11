@@ -35,7 +35,7 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         mySequence.Append(transform.DOScale(1.04f, 0.05f));
         mySequence.Append(transform.DOScale(1, 0.15f));
         hoverImage.enabled = true;
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse0)) {
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetKey(KeyCode.Mouse0) && inventoryItem.resourceSo is not null) {
             inventoriesManager.TransferItemToAnotherInventory(this);
         }
     }
@@ -46,7 +46,13 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
     
     public void OnBeginDrag(PointerEventData data) {
-        if (inventoryItem.resourceSo is null || Input.GetKey(KeyCode.LeftShift)) return;
+        if (inventoryItem.resourceSo is null) return;
+
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            inventoriesManager.TransferItemToAnotherInventory(this);
+            return;
+        }
+        
         int draggedAmount = inventoryItem.amount;
         if (data.button == PointerEventData.InputButton.Right) {
             if (draggedAmount == 1) return;
@@ -77,7 +83,7 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
     
     public void OnPointerClick(PointerEventData eventData) {
-        if (Input.GetKey(KeyCode.LeftShift)) {
+        if (Input.GetKey(KeyCode.LeftShift) && inventoryItem.resourceSo is not null) {
             inventoriesManager.TransferItemToAnotherInventory(this);
         }
     }
