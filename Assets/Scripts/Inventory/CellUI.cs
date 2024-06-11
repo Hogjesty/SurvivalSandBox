@@ -12,11 +12,13 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     [SerializeField] private Image hoverImage;
     [SerializeField] private Image spriteMask;
     
-    public InventoryItem inventoryItem;
+    public readonly InventoryItem inventoryItem;
     public ItemData[] storage;
     public int index;
 
     private InventoriesManager inventoriesManager;
+    private bool isDraggingRightButton;
+    private int draggedAmount;
 
     public Image Image => image;
     public TextMeshProUGUI CountText => countText;
@@ -27,6 +29,13 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
 
     private void Start() {
         inventoriesManager = FindObjectOfType<InventoriesManager>();
+    }
+
+    private void Update() {
+        if (isDraggingRightButton) {
+            CalculateNewDraggedAmount();
+            inventoriesManager.EnableDraggedImageWithNewParams(image.sprite, draggedAmount);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -53,9 +62,10 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
             return;
         }
         
-        int draggedAmount = inventoryItem.amount;
+        draggedAmount = inventoryItem.amount;
         if (data.button == PointerEventData.InputButton.Right) {
-            if (draggedAmount == 1) return;
+            if (inventoryItem.amount == 1) return;
+            isDraggingRightButton = true;
             draggedAmount = Mathf.CeilToInt(inventoryItem.amount / 2.0f);
         }
 
@@ -71,14 +81,15 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         if (inventoryItem.resourceSo is null || Input.GetKey(KeyCode.LeftShift)) return;
         inventoriesManager.DisableDraggedImage();
         spriteMask.enabled = false;
+        isDraggingRightButton = false;
         if (inventoriesManager.lastHoveredCell is not null) {
             CellUI destinationCell = inventoriesManager.lastHoveredCell.GetComponent<CellUI>();//todo перенести ластХоверед під капот методів???
             if (data.button == PointerEventData.InputButton.Right) {
-                inventoriesManager.OnRightClickDragEnd(this, destinationCell);
+                inventoriesManager.OnRightClickDragEnd(this, destinationCell, draggedAmount);
             } else {
                 inventoriesManager.OnDragEnd(this, destinationCell);
             }
-            AnimateDrop();
+            destinationCell.AnimateDrop();
         }
     }
     
@@ -94,9 +105,35 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
         countText.text = inventoryItem.resourceSo ? inventoryItem.amount.ToString() : null;
     }
 
-    private void AnimateDrop() {
+    public void AnimateDrop() {
         Sequence mySequence = DOTween.Sequence();
-        mySequence.Append(inventoriesManager.lastHoveredCell.transform.DOScale(0.96f, 0.05f));
-        mySequence.Append(inventoriesManager.lastHoveredCell.transform.DOScale(1, 0.15f));
+        mySequence.Append(transform.DOScale(0.96f, 0.05f));
+        mySequence.Append(transform.DOScale(1, 0.15f));
+    }
+
+    private void CalculateNewDraggedAmount() {
+        float mouseWheelInput = Input.GetAxis("Mouse ScrollWheel");
+        if (mouseWheelInput == 0) return;
+
+        int newDraggedAmount = draggedAmount;
+        if (Input.GetKey(KeyCode.LeftShift)) {
+            int percent = Mathf.CeilToInt(inventoryItem.amount / 100.0f);
+            newDraggedAmount = mouseWheelInput > 0 ? newDraggedAmount + percent : newDraggedAmount - percent;
+        } else if (Input.GetKey(KeyCode.LeftControl)) {
+            int percent = Mathf.CeilToInt(inventoryItem.amount / 1000.0f);
+            newDraggedAmount = mouseWheelInput > 0 ? newDraggedAmount + percent : newDraggedAmount - percent;
+        } else {
+            newDraggedAmount = mouseWheelInput > 0 ? newDraggedAmount + 1 : newDraggedAmount - 1;
+        }
+
+        if (newDraggedAmount > inventoryItem.amount) {
+            newDraggedAmount = inventoryItem.amount;
+        }
+
+        if (newDraggedAmount < 1) {
+            newDraggedAmount = 1;
+        }
+
+        draggedAmount = newDraggedAmount;
     }
 }

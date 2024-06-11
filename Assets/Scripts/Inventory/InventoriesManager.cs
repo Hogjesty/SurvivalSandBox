@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Inventory {
     public class InventoriesManager : MonoBehaviour {
         [SerializeField] private Image draggedImage;
-        [SerializeField] private TextMeshProUGUI draggedAmount;
+        [SerializeField] private TextMeshProUGUI draggedAmountText;
         [SerializeField] private InventoryUI playerInventory;
         [SerializeField] private InventoryUI chestInventory;
         [SerializeField] private InventoryUI hotbarInventory;
@@ -65,7 +66,7 @@ namespace Inventory {
 
         public void EnableDraggedImageWithNewParams(Sprite sprite, int draggedAmount) {
             draggedImage.sprite = sprite;
-            this.draggedAmount.text = draggedAmount.ToString();
+            draggedAmountText.text = draggedAmount.ToString();
             draggedImage.gameObject.SetActive(true);
         }
 
@@ -104,7 +105,7 @@ namespace Inventory {
             SwapItems(departmentCell, destinationCell);
         }
 
-        public void OnRightClickDragEnd(CellUI departmentCell, CellUI destinationCell) {
+        public void OnRightClickDragEnd(CellUI departmentCell, CellUI destinationCell, int newAmount) {
             if (departmentCell.gameObject == destinationCell.gameObject 
                 || departmentCell.inventoryItem.resourceSo is null 
                 || departmentCell.inventoryItem.amount == 1) {
@@ -116,7 +117,6 @@ namespace Inventory {
                 return;
             }
             
-            int newAmount = Mathf.CeilToInt(departmentCell.inventoryItem.amount / 2.0f);
             TransferAmountOfItem(departmentCell, destinationCell, newAmount);
         }
 
@@ -142,9 +142,10 @@ namespace Inventory {
             }
             SetCell(departmentCell, resourceSo, departmentCell.inventoryItem.amount);
             SetCell(destinationCell,resourceSo,amount);
+            if (departmentCell.inventoryItem.amount == 0) {
+                ResetCell(departmentCell);
+            }
         }
-        
-        
         
         public void TryToAddItemIntoPlayerInventory(WorldItem newItem) {
             foreach (ItemData item in playerStorage.Storage) {
@@ -221,6 +222,7 @@ namespace Inventory {
                         } else {
                             TryToTransferItemToAnotherInventory(departmentCell, destinationInventory);
                         }
+                        destinationCell.cellUI.AnimateDrop();
                         return;
                     }
                 }
@@ -229,6 +231,7 @@ namespace Inventory {
             foreach (InventoryItem item in destinationInventory.UIItems) {
                 if (item.resourceSo is null) {
                     TransferItem(departmentCell, item.cellUI);
+                    item.cellUI.AnimateDrop();
                     return;
                 }
             }
