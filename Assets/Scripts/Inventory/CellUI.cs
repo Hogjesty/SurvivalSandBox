@@ -78,7 +78,7 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     }
     
     public void OnEndDrag(PointerEventData data) {
-        if (inventoryItem.resourceSo is null || Input.GetKey(KeyCode.LeftShift)) return;
+        if (inventoryItem.resourceSo is null) return;
         inventoriesManager.DisableDraggedImage();
         spriteMask.enabled = false;
         isDraggingRightButton = false;
