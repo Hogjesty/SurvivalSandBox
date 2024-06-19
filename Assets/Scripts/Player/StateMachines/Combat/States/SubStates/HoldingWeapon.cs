@@ -22,6 +22,9 @@ namespace Player.StateMachines.Combat.States.SubStates {
             }
         }
 
+        public override void FixedUpdate() {
+        }
+
         public override void Exit() {
             combatStateMachine.SetAnimBool(combatStateMachine.IsHoldingWeaponBool, false);
         }

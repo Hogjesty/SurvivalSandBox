@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Player.StateMachines.Interaction.States.SubStates {
     public class PickingUp : BaseState {
-        protected readonly InteractionStateMachine interactionStateMachine;
+        private readonly InteractionStateMachine interactionStateMachine;
         
         private bool isAnimationEnded;
         
@@ -27,6 +27,9 @@ namespace Player.StateMachines.Interaction.States.SubStates {
             if (isAnimationEnded) {
                 interactionStateMachine.ChangeState(interactionStateMachine.idleState);
             }
+        }
+
+        public override void FixedUpdate() {
         }
 
         public override void Exit() {

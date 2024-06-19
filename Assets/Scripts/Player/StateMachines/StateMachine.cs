@@ -14,6 +14,10 @@ namespace Player.StateMachines {
             currentState?.Update();
         }
 
+        private void FixedUpdate() {
+            currentState?.FixedUpdate();
+        }
+
         protected abstract BaseState GetInitialState();
 
         public void ChangeState(BaseState newState) {

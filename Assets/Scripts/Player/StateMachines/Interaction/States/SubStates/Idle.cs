@@ -2,7 +2,9 @@ using UnityEngine;
 
 namespace Player.StateMachines.Interaction.States.SubStates {
     public class Idle : BaseState {
-        protected readonly InteractionStateMachine interactionStateMachine;
+        private readonly InteractionStateMachine interactionStateMachine;
+        private bool raycast;
+        private RaycastHit hitInfo;
         
         public Idle(StateMachine stateMachine) : base(stateMachine) {
             interactionStateMachine = (InteractionStateMachine)this.stateMachine;
@@ -13,13 +15,6 @@ namespace Player.StateMachines.Interaction.States.SubStates {
         }
 
         public override void Update() {
-            bool raycast = Physics.Raycast(
-                interactionStateMachine.StartRayPoint.position,
-                interactionStateMachine.MainCamera.transform.forward,
-                out RaycastHit hitInfo,
-                2f,
-                interactionStateMachine.LayerMask
-            );
             if (raycast) {
                 Vector3 objPos = hitInfo.transform.position;
                 Vector3 objPosPixels = interactionStateMachine.MainCamera.WorldToViewportPoint(objPos);
@@ -40,6 +35,18 @@ namespace Player.StateMachines.Interaction.States.SubStates {
             } else {
                 interactionStateMachine.InteractPopupText.gameObject.SetActive(false);
             }
+        }
+
+        public override void FixedUpdate() {
+            bool raycast = Physics.Raycast(
+                interactionStateMachine.StartRayPoint.position,
+                interactionStateMachine.MainCamera.transform.forward,
+                out RaycastHit hitInfo,
+                2f,
+                interactionStateMachine.LayerMask
+            );
+            this.raycast = raycast;
+            this.hitInfo = hitInfo;
         }
 
         public override void Exit() {

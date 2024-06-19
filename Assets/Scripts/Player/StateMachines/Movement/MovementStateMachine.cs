@@ -1,3 +1,4 @@
+using System;
 using Player.StateMachines.Movement.States.SubStates;
 using UnityEngine;
 
@@ -86,6 +87,11 @@ namespace Player.StateMachines.Movement {
             string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
             GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
             GUILayout.EndArea();
+        }
+
+        private void OnDrawGizmos() {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(GetGroundPoint.position, 0.15f);
         }
     }
 }

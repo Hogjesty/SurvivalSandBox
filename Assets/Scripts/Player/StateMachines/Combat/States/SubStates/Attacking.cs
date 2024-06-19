@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Player.StateMachines.Combat.States.SubStates {
     public class Attacking : BaseState {
-        protected readonly CombatStateMachine combatStateMachine;
+        private readonly CombatStateMachine combatStateMachine;
 
         private bool isAnimationEnded;
         private float hitRadius;
@@ -26,6 +26,9 @@ namespace Player.StateMachines.Combat.States.SubStates {
             if (isAnimationEnded) {
                 combatStateMachine.ChangeState(combatStateMachine.holdingWeaponState);
             }
+        }
+
+        public override void FixedUpdate() {
         }
 
         public override void Exit() {

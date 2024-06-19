@@ -10,6 +10,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private float currentSpeed;
         private float velocity;
         private float targetSpeed;
+        private bool isPlayerOnGround;
         
         public Jumping(StateMachine stateMachine) : base(stateMachine) {
         }
@@ -39,6 +40,12 @@ namespace Player.StateMachines.Movement.States.SubStates {
             );
         }
 
+        public override void FixedUpdate() {
+            base.FixedUpdate();
+            isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position, 0.15f)
+                .Any(x => !x.gameObject.CompareTag("Player"));
+        }
+
         public override void Exit() {
             base.Exit();
             movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_JUMPING, false);
@@ -46,9 +53,6 @@ namespace Player.StateMachines.Movement.States.SubStates {
         }
         
         private void CheckForTransition() {
-            bool isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position, 0.15f)
-                .Any(x => !x.gameObject.CompareTag("Player"));
-
             if (!isPlayerOnGround) {
                 readyToLand = true;
             }

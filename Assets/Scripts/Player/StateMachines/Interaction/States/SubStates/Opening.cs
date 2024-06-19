@@ -2,7 +2,7 @@ using Inventory;
 
 namespace Player.StateMachines.Interaction.States.SubStates {
     public class Opening : BaseState {
-        protected readonly InteractionStateMachine interactionStateMachine;
+        private readonly InteractionStateMachine interactionStateMachine;
         
         public Opening(StateMachine stateMachine) : base(stateMachine) {
             interactionStateMachine = (InteractionStateMachine)this.stateMachine;
@@ -15,6 +15,9 @@ namespace Player.StateMachines.Interaction.States.SubStates {
 
         public override void Update() {
             interactionStateMachine.ChangeState(interactionStateMachine.idleState);
+        }
+
+        public override void FixedUpdate() {
         }
 
         public override void Exit() {

@@ -8,6 +8,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private float currentSpeed;
         private float velocity;
         private float targetSpeed;
+        private bool isPlayerOnGround;
         
         public Falling(StateMachine stateMachine) : base(stateMachine) {
         }
@@ -34,6 +35,12 @@ namespace Player.StateMachines.Movement.States.SubStates {
             );
         }
 
+        public override void FixedUpdate() {
+            base.FixedUpdate();
+            isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position, 0.15f)
+                .Any(x => !x.gameObject.CompareTag("Player"));
+        }
+
         public override void Exit() {
             base.Exit();
             movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_FALLING, false);
@@ -41,9 +48,6 @@ namespace Player.StateMachines.Movement.States.SubStates {
         }
         
         private void CheckForTransition() {
-            bool isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position, 0.15f)
-                .Any(x => !x.gameObject.CompareTag("Player"));
-            
             if (isPlayerOnGround) {
                 if (direction.magnitude > 0) {
                     if (movementStateMachine.isShiftPressed) {

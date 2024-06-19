@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Player.StateMachines.Combat.States.SubStates {
     public class Idle : BaseState {
-        protected readonly CombatStateMachine movementStateMachine;
+        private readonly CombatStateMachine movementStateMachine;
         
         public Idle(StateMachine stateMachine) : base(stateMachine) {
             movementStateMachine = (CombatStateMachine) this.stateMachine;
@@ -16,6 +16,9 @@ namespace Player.StateMachines.Combat.States.SubStates {
             if (Input.GetKeyDown(KeyCode.Alpha1)) {
                 movementStateMachine.ChangeState(movementStateMachine.equippingWeaponState);
             }
+        }
+
+        public override void FixedUpdate() {
         }
 
         public override void Exit() {

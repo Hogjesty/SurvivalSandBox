@@ -2,7 +2,7 @@ using Player.AnimationsEvents;
 
 namespace Player.StateMachines.Combat.States.SubStates {
     public class UnequippingWeapon : BaseState {
-        protected readonly CombatStateMachine combatStateMachine;
+        private readonly CombatStateMachine combatStateMachine;
 
         private bool isAnimationEnded;
         
@@ -21,6 +21,9 @@ namespace Player.StateMachines.Combat.States.SubStates {
             if (isAnimationEnded) {
                 combatStateMachine.ChangeState(combatStateMachine.idleState);
             }
+        }
+
+        public override void FixedUpdate() {
         }
 
         public override void Exit() {
