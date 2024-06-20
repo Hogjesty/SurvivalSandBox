@@ -43,11 +43,11 @@ namespace Player.StateMachines.Interaction {
         public TextMeshProUGUI InteractPopupText => interactPopupText;
         public InventoriesManager InventoriesManager => inventoriesManager;
         
-        // private void OnGUI() {
-        //     GUILayout.BeginArea(new Rect(10f, 110f, 400f, 100f));
-        //     string content = "Interaction: " + (CurrentState != null ? CurrentState.name : "(no current state)");
-        //     GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
-        //     GUILayout.EndArea();
-        // }
+        private void OnGUI() {
+            GUILayout.BeginArea(new Rect(10f, 110f, 400f, 100f));
+            string content = "Interaction: " + (CurrentState != null ? CurrentState.name : "(no current state)");
+            GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
+            GUILayout.EndArea();
+        }
     }
 }

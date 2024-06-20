@@ -2526,9 +2526,6 @@ MonoBehaviour:
   obstacle:
     serializedVersion: 2
     m_Bits: 8
-  distanceForAvoidObstacle: 0.31
-  sphereRadius: 0.3
-  maxDistanceForSphereCast: 2
   isRotationFrozen: 0
 --- !u!1001 &335841441
 PrefabInstance:

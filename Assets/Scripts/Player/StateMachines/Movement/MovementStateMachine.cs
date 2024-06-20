@@ -82,12 +82,12 @@ namespace Player.StateMachines.Movement {
         public float GetJumpForce => jumpForce;
         public float GetFallingBorder => fallingBorder;
         
-        // private void OnGUI() {
-        //     GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
-        //     string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
-        //     GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
-        //     GUILayout.EndArea();
-        // }
+        private void OnGUI() {
+            GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
+            string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
+            GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
+            GUILayout.EndArea();
+        }
 
         private void OnDrawGizmos() {
             Gizmos.color = Color.yellow;
