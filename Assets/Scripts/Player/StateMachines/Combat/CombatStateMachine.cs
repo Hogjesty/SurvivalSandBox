@@ -44,11 +44,11 @@ namespace Player.StateMachines.Combat {
         public GameObject GetWeaponInHand => weaponInHand;
         public GameObject GetWeaponInBelt => weaponInBelt;
 
-        private void OnGUI() {
-            GUILayout.BeginArea(new Rect(10f, 60f, 700f, 100f));
-            string content = "Combat: " + (CurrentState != null ? CurrentState.name : "(no current state)");
-            GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
-            GUILayout.EndArea();
-        }
+        // private void OnGUI() {
+        //     GUILayout.BeginArea(new Rect(10f, 60f, 700f, 100f));
+        //     string content = "Combat: " + (CurrentState != null ? CurrentState.name : "(no current state)");
+        //     GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
+        //     GUILayout.EndArea();
+        // }
     }
 }
