@@ -120,6 +120,20 @@ namespace Inventory {
             TransferAmountOfItem(departmentCell, destinationCell, newAmount);
         }
 
+        public void OnMiddleClickDragEnd(CellUI departmentCell, CellUI destinationCell, int newAmount) {
+            if (departmentCell.gameObject == destinationCell.gameObject 
+                || departmentCell.inventoryItem.resourceSo is null) {
+                return;
+            }
+
+            if (destinationCell.inventoryItem.resourceSo is not null &&
+                destinationCell.inventoryItem.resourceSo.ResourceType != departmentCell.inventoryItem.resourceSo.ResourceType) {
+                return;
+            }
+            
+            TransferAmountOfItem(departmentCell, destinationCell, newAmount);
+        }
+
         private void SwapItems(CellUI departmentCell, CellUI destinationCell) {
             ResourceSO tempResourceSo = destinationCell.inventoryItem.resourceSo;
             int tempAmount = destinationCell.inventoryItem.amount;

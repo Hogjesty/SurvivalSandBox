@@ -67,6 +67,8 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
             if (inventoryItem.amount == 1) return;
             isDraggingRightButton = true;
             draggedAmount = Mathf.CeilToInt(inventoryItem.amount / 2.0f);
+        } else if (data.button == PointerEventData.InputButton.Middle) {
+            draggedAmount = 1;
         }
 
         spriteMask.enabled = true;
@@ -86,6 +88,8 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
             CellUI destinationCell = inventoriesManager.lastHoveredCell.GetComponent<CellUI>();//todo перенести ластХоверед під капот методів???
             if (data.button == PointerEventData.InputButton.Right) {
                 inventoriesManager.OnRightClickDragEnd(this, destinationCell, draggedAmount);
+            } else if (data.button == PointerEventData.InputButton.Middle) {
+                inventoriesManager.OnMiddleClickDragEnd(this, destinationCell, draggedAmount);
             } else {
                 inventoriesManager.OnDragEnd(this, destinationCell);
             }
