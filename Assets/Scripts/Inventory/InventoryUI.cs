@@ -25,10 +25,6 @@ namespace Inventory {
                 cell.gameObject.name = "Cell" + i;
                 cell.index = i;
                 UIitems.Add(cell.inventoryItem);
-                if (storageType == StorageType.Hotbar) {
-                    cellObject.transform.GetChild(cellObject.transform.childCount - 1)
-                        .GetComponent<TextMeshProUGUI>().text = (i + 1).ToString();
-                }
             }
         }
 

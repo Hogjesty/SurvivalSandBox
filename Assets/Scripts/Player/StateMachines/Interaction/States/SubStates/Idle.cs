@@ -46,7 +46,7 @@ namespace Player.StateMachines.Interaction.States.SubStates {
                 interactionStateMachine.LayerMask
             );
             this.raycast = raycast;
-            this.hitInfo = hitInfo;
+            this.hitInfo = hitInfo;// не встигає записатись скоріш за все
         }
 
         public override void Exit() {

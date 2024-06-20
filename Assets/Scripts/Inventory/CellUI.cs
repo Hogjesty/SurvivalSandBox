@@ -13,8 +13,8 @@ public class CellUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, 
     [SerializeField] private Image spriteMask;
     
     public readonly InventoryItem inventoryItem;
-    public ItemData[] storage;
-    public int index;
+    [HideInInspector] public ItemData[] storage;
+    [HideInInspector] public int index;
 
     private InventoriesManager inventoriesManager;
     private bool isDraggingRightButton;

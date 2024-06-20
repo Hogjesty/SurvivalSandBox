@@ -7,6 +7,6 @@ namespace Inventory {
     }
     
     public enum StorageType {
-        Player = 20, Chest = 16, Hotbar = 4
+        Player = 20, Chest = 21, Hotbar = 4
     }
 }

@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 8500603466301501189}
   - component: {fileID: 8230907291087911774}
   m_Layer: 5
-  m_Name: InventoryCell
+  m_Name: Cell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
