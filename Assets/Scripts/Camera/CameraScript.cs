@@ -7,17 +7,12 @@ public class CameraScript : MonoBehaviour {
     [SerializeField] private Transform playerTransform;
     [SerializeField] private LayerMask obstacle;
 
-    private Camera camera;
+    [HideInInspector] public bool isRotationFrozen;
     
     private float cameraDistance;
-    public bool isRotationFrozen;
 
     private float axisY;
     private float axisX;
-
-    private void Start() {
-        camera = GetComponent<Camera>();
-    }
     
     private void LateUpdate() {
         float mouseWheel = 0;
@@ -37,27 +32,9 @@ public class CameraScript : MonoBehaviour {
         transform.position = AdjustCameraPosition(playerTransform.position, position);
     }
     
-    private Vector3 AdjustCameraPosition(Vector3 origin, Vector3 targetPosition) {
-        if (Physics.Raycast(origin, targetPosition - origin, out RaycastHit hit, cameraDistance, obstacle)) {
-            return hit.point + hit.normal * 0.3f;
-        }
-
-        for (int i = 0; i < 8; i++) {
-            Vector3 direction = Quaternion.Euler(0, 0, i * 45) * Vector3.up;
-            Vector3 rayDir = transform.rotation * direction;
-            Ray ray = new Ray(targetPosition, rayDir);
-            Debug.DrawRay(targetPosition, rayDir, Color.red, 0.2f);
-            if (Physics.Raycast(ray, out RaycastHit hit2, 0.2f, obstacle)) {
-                return hit2.point - rayDir.normalized * 0.19f;
-            }
-        }
-
-        return targetPosition;
+    private Vector3 AdjustCameraPosition(Vector3 playerPosition, Vector3 targetPosition) {
+        Ray ray = new Ray(playerPosition, targetPosition - playerPosition);
+        bool sphereCast = Physics.SphereCast(ray, 0.3f, out RaycastHit sphereHit, cameraDistance, obstacle);
+        return sphereCast ? sphereHit.point + sphereHit.normal * 0.31f : targetPosition;
     }
-    
-    // private void OnDrawGizmos() {
-    //     Gizmos.color = Color.red;
-    //     Vector3 dir = transform.position - playerTransform.position;
-    //     Gizmos.DrawRay(playerTransform.position, dir);
-    // }
 }
