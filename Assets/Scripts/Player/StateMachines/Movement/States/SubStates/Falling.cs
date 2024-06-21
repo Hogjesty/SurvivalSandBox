@@ -22,9 +22,20 @@ namespace Player.StateMachines.Movement.States.SubStates {
         }
 
         public override void Update() {
-            direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
             base.Update();
+            direction = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
             CheckForTransition();
+
+            if (movementStateMachine.GetCharacterController.isGrounded) {
+                Ray rayDown = new Ray(movementStateMachine.GetSphereCastPointGround.position, Vector3.down);
+                bool sphereCast = Physics.SphereCast(rayDown, movementStateMachine.GetSlippingSphereCastRadius, out RaycastHit hitInfo, 0.2f);
+                if (sphereCast) {
+                    direction = hitInfo.normal - direction * -0.5f;
+                    Vector3 vector3 = new Vector3(direction.x, movementStateMachine.GetSlippingSpeed, direction.z) * Time.deltaTime;
+                    movementStateMachine.GetCharacterController.Move(vector3);
+                    return;
+                }
+            }
 
             currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref velocity, 0.4f);
             movementStateMachine.Move(
@@ -35,12 +46,6 @@ namespace Player.StateMachines.Movement.States.SubStates {
             );
         }
 
-        public override void FixedUpdate() {
-            base.FixedUpdate();
-            isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position, 0.15f)
-                .Any(x => !x.gameObject.CompareTag("Player"));
-        }
-
         public override void Exit() {
             base.Exit();
             movementStateMachine.GetPlayerAnimator.SetBool(MovementStateMachine.IS_FALLING, false);
@@ -48,6 +53,8 @@ namespace Player.StateMachines.Movement.States.SubStates {
         }
         
         private void CheckForTransition() {
+            isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position,
+                movementStateMachine.GetOnGroundSphereRadius).Any(x => !x.gameObject.CompareTag("Player"));
             if (isPlayerOnGround) {
                 if (direction.magnitude > 0) {
                     if (movementStateMachine.isShiftPressed) {
@@ -60,20 +67,6 @@ namespace Player.StateMachines.Movement.States.SubStates {
                 }
                 movementStateMachine.ChangeState(movementStateMachine.idleState);
             }
-
-            // CharacterController cont = movementStateMachine.GetCharacterController;
-            //
-            // if (cont.isGrounded) {
-            //     RaycastHit hit;
-            //     if (Physics.Raycast(movementStateMachine.GetGroundPoint.position, Vector3.down, out hit)) {
-            //         float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
-            //         if (slopeAngle > cont.slopeLimit) {
-            //             Vector3 slopeDirection = Vector3.Cross(hit.normal, Vector3.down);
-            //             slopeDirection = Vector3.Cross(slopeDirection, hit.normal);
-            //             cont.Move(slopeDirection.normalized * 1 * Time.deltaTime);
-            //         }
-            //     }
-            // }
         }
     }
 }

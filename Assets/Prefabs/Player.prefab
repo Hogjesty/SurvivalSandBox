@@ -962,6 +962,7 @@ Transform:
   - {fileID: 694844616219026116}
   - {fileID: 423740130147341333}
   - {fileID: 9208467927221186140}
+  - {fileID: 255499249746048898}
   - {fileID: 8429025857663198146}
   - {fileID: 755984458723409826}
   - {fileID: 6226846728281362651}
@@ -1007,13 +1008,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
   groundPoint: {fileID: 755984458723409826}
+  sphereCastPointGround: {fileID: 255499249746048898}
   playerAnimator: {fileID: 1263381924455128816}
   speed: 5
   sprintCoefficient: 2
-  rotationSpeed: 0.08
+  rotationSpeed: 0.6
   gravitySpeed: 45
   jumpForce: 15
   fallingBorder: -25
+  slippingSphereCastRadius: 0.29
+  onGroundSphereRadius: 0.15
+  slippingSpeed: -10
   lastSpeed: 0
   isShiftPressed: 0
 --- !u!114 &1454709099057457200
@@ -2185,6 +2190,37 @@ Transform:
   m_Children:
   - {fileID: 3904176620870199196}
   m_Father: {fileID: 6584364693691699652}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6280050075562383687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 255499249746048898}
+  m_Layer: 2
+  m_Name: SphereCastPointGround
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &255499249746048898
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6280050075562383687}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.327, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7772978048557419948}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6483212383182733569
 GameObject:

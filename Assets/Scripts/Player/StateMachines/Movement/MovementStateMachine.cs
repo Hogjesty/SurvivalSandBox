@@ -14,6 +14,7 @@ namespace Player.StateMachines.Movement {
         
         [SerializeField] private Transform mainCamera;
         [SerializeField] private Transform groundPoint;
+        [SerializeField] private Transform sphereCastPointGround;
         [SerializeField] private Animator playerAnimator;
 
         [SerializeField] private float speed;
@@ -22,6 +23,9 @@ namespace Player.StateMachines.Movement {
         [SerializeField] private float gravitySpeed;
         [SerializeField] private float jumpForce;
         [SerializeField] private float fallingBorder;
+        [SerializeField] private float slippingSphereCastRadius;
+        [SerializeField] private float onGroundSphereRadius;
+        [SerializeField] private float slippingSpeed;
 
         [HideInInspector] public float lastSpeed;
         [HideInInspector] public bool isShiftPressed;
@@ -62,18 +66,13 @@ namespace Player.StateMachines.Movement {
             characterController.Move(globalMovingDirection * Time.deltaTime);
         }
 
-        public void SetEnabled(bool isEnabled) {
-            ChangeState(idleState);
-            enabled = isEnabled;
-        }
-
         protected override BaseState GetInitialState() {
             return idleState;
         }
 
         public float GetRotationSpeed => rotationSpeed;
-        public Transform GetMainCamera => mainCamera;
         public Transform GetGroundPoint => groundPoint;
+        public Transform GetSphereCastPointGround => sphereCastPointGround;
         public Animator GetPlayerAnimator => playerAnimator;
         public CharacterController GetCharacterController => characterController;
         public float GetSpeed => speed;
@@ -81,17 +80,20 @@ namespace Player.StateMachines.Movement {
         public float GetGravitySpeed => gravitySpeed;
         public float GetJumpForce => jumpForce;
         public float GetFallingBorder => fallingBorder;
+        public float GetSlippingSphereCastRadius => slippingSphereCastRadius;
+        public float GetOnGroundSphereRadius => onGroundSphereRadius;
+        public float GetSlippingSpeed => slippingSpeed;
         
-        // private void OnGUI() {
-        //     GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
-        //     string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
-        //     GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
-        //     GUILayout.EndArea();
-        // }
+        private void OnGUI() {
+            GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
+            string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
+            GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
+            GUILayout.EndArea();
+        }
 
         private void OnDrawGizmos() {
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(GetGroundPoint.position, 0.15f);
+            Gizmos.DrawSphere(GetGroundPoint.position, GetOnGroundSphereRadius);
         }
     }
 }

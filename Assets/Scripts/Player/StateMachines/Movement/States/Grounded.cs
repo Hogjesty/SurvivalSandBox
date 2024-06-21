@@ -16,8 +16,8 @@ namespace Player.StateMachines.Movement.States {
         }
 
         public override void FixedUpdate() {
-            bool isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position, 0.15f)
-                .Any(x => !x.gameObject.CompareTag("Player"));
+            bool isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position,
+                movementStateMachine.GetOnGroundSphereRadius).Any(x => !x.gameObject.CompareTag("Player"));
             if (!isPlayerOnGround) {
                 movementStateMachine.ChangeState(movementStateMachine.fallingState);
             }
