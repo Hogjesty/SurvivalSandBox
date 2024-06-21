@@ -1,3 +1,5 @@
+using Player.StateMachines;
+using Player.StateMachines.Movement.States.SubStates;
 using UnityEngine;
 
 public class CameraScript : MonoBehaviour {
@@ -5,7 +7,11 @@ public class CameraScript : MonoBehaviour {
     [SerializeField] private float horizontalSensitivity;
     [SerializeField] private float lerpRatio;
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform sphereCastUp;
+    [SerializeField] private Transform sphereCastDown;
     [SerializeField] private LayerMask obstacle;
+    [SerializeField] private float sphereRadius;
+    [SerializeField] private StateMachineManager stateMachineManager;
 
     [HideInInspector] public bool isRotationFrozen;
     
@@ -29,12 +35,17 @@ public class CameraScript : MonoBehaviour {
         transform.rotation = Quaternion.Lerp(transform.rotation, newRotation, lerpRatio);
         
         Vector3 position = playerTransform.position - transform.forward * cameraDistance;
-        transform.position = AdjustCameraPosition(playerTransform.position, position);
+        transform.position = AdjustCameraPosition(position);
     }
     
-    private Vector3 AdjustCameraPosition(Vector3 playerPosition, Vector3 targetPosition) {
-        Ray ray = new Ray(playerPosition, targetPosition - playerPosition);
-        bool sphereCast = Physics.SphereCast(ray, 0.3f, out RaycastHit sphereHit, cameraDistance, obstacle);
-        return sphereCast ? sphereHit.point + sphereHit.normal * 0.31f : targetPosition;
+    private Vector3 AdjustCameraPosition(Vector3 targetPosition) {
+        Vector3 sphereCastPosition = sphereCastUp.position;
+        if (stateMachineManager.GetMovementCurrentStateName().Equals(nameof(Crouching)) ||
+            stateMachineManager.GetMovementCurrentStateName().Equals(nameof(Sneaking))) {
+            sphereCastPosition = sphereCastDown.position;
+        }
+        Ray ray = new Ray(sphereCastPosition, targetPosition - sphereCastPosition);
+        bool sphereCast = Physics.SphereCast(ray, sphereRadius, out RaycastHit sphereHit, cameraDistance, obstacle);
+        return sphereCast ? sphereHit.point + sphereHit.normal * (sphereRadius + 0.01f) : targetPosition;
     }
 }

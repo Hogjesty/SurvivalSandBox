@@ -3,7 +3,7 @@ using UnityEngine;
 namespace Player.StateMachines {
     public abstract class StateMachine : MonoBehaviour {
         private BaseState currentState;
-        protected BaseState CurrentState => currentState;
+        public BaseState CurrentState => currentState;
 
         private void Start() {
             currentState = GetInitialState();

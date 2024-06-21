@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Player.StateMachines.Interaction.States.SubStates {
@@ -15,12 +16,16 @@ namespace Player.StateMachines.Interaction.States.SubStates {
         }
 
         public override void Update() {
-            if (raycast) {
-                Vector3 objPos = hitInfo.transform.position;
-                Vector3 objPosPixels = interactionStateMachine.MainCamera.WorldToViewportPoint(objPos);
-                objPosPixels.y += Screen.height * 0.1f;
-                interactionStateMachine.InteractPopupText.transform.localPosition = objPosPixels;
-                interactionStateMachine.InteractPopupText.gameObject.SetActive(true);
+            if (hitInfo.transform) {
+                try {
+                    Vector3 objPos = hitInfo.transform.position;
+                    Vector3 objPosPixels = interactionStateMachine.MainCamera.WorldToViewportPoint(objPos);
+                    objPosPixels.y += Screen.height * 0.1f;
+                    interactionStateMachine.InteractPopupText.transform.localPosition = objPosPixels;
+                    interactionStateMachine.InteractPopupText.gameObject.SetActive(true);
+                } catch (Exception e) {
+                    Debug.Log(hitInfo.transform);
+                }
                 
                 if (Input.GetKeyDown(KeyCode.E)) {
                     interactionStateMachine.currentObject = hitInfo.transform.gameObject;
@@ -38,15 +43,14 @@ namespace Player.StateMachines.Interaction.States.SubStates {
         }
 
         public override void FixedUpdate() {
-            bool raycast = Physics.Raycast(
+            Physics.Raycast(
                 interactionStateMachine.StartRayPoint.position,
                 interactionStateMachine.MainCamera.transform.forward,
                 out RaycastHit hitInfo,
                 2f,
                 interactionStateMachine.LayerMask
             );
-            this.raycast = raycast;
-            this.hitInfo = hitInfo;// не встигає записатись скоріш за все
+            this.hitInfo = hitInfo;
         }
 
         public override void Exit() {
