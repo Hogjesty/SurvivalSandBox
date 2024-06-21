@@ -9,6 +9,7 @@ namespace Player.StateMachines.Movement.States.SubStates {
         private float velocity;
         private float targetSpeed;
         private bool isPlayerOnGround;
+        private RaycastHit slippingPointInfo;
         
         public Falling(StateMachine stateMachine) : base(stateMachine) {
         }
@@ -39,6 +40,9 @@ namespace Player.StateMachines.Movement.States.SubStates {
             base.FixedUpdate();
             isPlayerOnGround = Physics.OverlapSphere(movementStateMachine.GetGroundPoint.position, 0.15f)
                 .Any(x => !x.gameObject.CompareTag("Player"));
+            Ray rayDown = new Ray(movementStateMachine.GetSphereCastPointGround.position, Vector3.down);
+            Physics.SphereCast(rayDown, 0.26f, out RaycastHit hitInfo, 0.3f);
+            slippingPointInfo = hitInfo;
         }
 
         public override void Exit() {
@@ -61,19 +65,9 @@ namespace Player.StateMachines.Movement.States.SubStates {
                 movementStateMachine.ChangeState(movementStateMachine.idleState);
             }
 
-            // CharacterController cont = movementStateMachine.GetCharacterController;
-            //
-            // if (cont.isGrounded) {
-            //     RaycastHit hit;
-            //     if (Physics.Raycast(movementStateMachine.GetGroundPoint.position, Vector3.down, out hit)) {
-            //         float slopeAngle = Vector3.Angle(hit.normal, Vector3.up);
-            //         if (slopeAngle > cont.slopeLimit) {
-            //             Vector3 slopeDirection = Vector3.Cross(hit.normal, Vector3.down);
-            //             slopeDirection = Vector3.Cross(slopeDirection, hit.normal);
-            //             cont.Move(slopeDirection.normalized * 1 * Time.deltaTime);
-            //         }
-            //     }
-            // }
+            if (slippingPointInfo.transform) {
+                movementStateMachine.ChangeState(movementStateMachine.slippingState);
+            }
         }
     }
 }

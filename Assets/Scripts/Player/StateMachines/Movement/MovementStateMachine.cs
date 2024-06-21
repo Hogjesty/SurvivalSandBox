@@ -11,9 +11,11 @@ namespace Player.StateMachines.Movement {
         public static readonly int IS_FALLING = Animator.StringToHash("IsFalling");
         public static readonly int IS_SNEAKING = Animator.StringToHash("IsSneaking");
         public static readonly int IS_CROUCHING = Animator.StringToHash("IsCrouching");
+        public static readonly int IS_SLIPPING = Animator.StringToHash("IsSlipping");
         
         [SerializeField] private Transform mainCamera;
         [SerializeField] private Transform groundPoint;
+        [SerializeField] private Transform sphereCastPointGround;
         [SerializeField] private Animator playerAnimator;
 
         [SerializeField] private float speed;
@@ -35,6 +37,7 @@ namespace Player.StateMachines.Movement {
         public Falling fallingState { get; private set; }
         public Sneaking sneakingState { get; private set; }
         public Crouching crouchingState { get; private set; }
+        public Slipping slippingState { get; private set; }
 
         private void Awake() {
             idleState = new Idle(this);
@@ -44,6 +47,7 @@ namespace Player.StateMachines.Movement {
             fallingState = new Falling(this);
             sneakingState = new Sneaking(this);
             crouchingState = new Crouching(this);
+            slippingState = new Slipping(this);
             
             characterController = GetComponent<CharacterController>();
         }
@@ -62,18 +66,13 @@ namespace Player.StateMachines.Movement {
             characterController.Move(globalMovingDirection * Time.deltaTime);
         }
 
-        public void SetEnabled(bool isEnabled) {
-            ChangeState(idleState);
-            enabled = isEnabled;
-        }
-
         protected override BaseState GetInitialState() {
             return idleState;
         }
 
         public float GetRotationSpeed => rotationSpeed;
-        public Transform GetMainCamera => mainCamera;
         public Transform GetGroundPoint => groundPoint;
+        public Transform GetSphereCastPointGround => sphereCastPointGround;
         public Animator GetPlayerAnimator => playerAnimator;
         public CharacterController GetCharacterController => characterController;
         public float GetSpeed => speed;
@@ -82,12 +81,12 @@ namespace Player.StateMachines.Movement {
         public float GetJumpForce => jumpForce;
         public float GetFallingBorder => fallingBorder;
         
-        // private void OnGUI() {
-        //     GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
-        //     string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
-        //     GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
-        //     GUILayout.EndArea();
-        // }
+        private void OnGUI() {
+            GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
+            string content = "Movement: " + (CurrentState != null ? CurrentState.name : "(no current state)");
+            GUILayout.Label($"<color='black'><size=40>{content}</size></color>");
+            GUILayout.EndArea();
+        }
 
         private void OnDrawGizmos() {
             Gizmos.color = Color.yellow;
