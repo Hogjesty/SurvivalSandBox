@@ -11,6 +11,7 @@ namespace Player.StateMachines.Movement {
         public static readonly int IS_FALLING = Animator.StringToHash("IsFalling");
         public static readonly int IS_SNEAKING = Animator.StringToHash("IsSneaking");
         public static readonly int IS_CROUCHING = Animator.StringToHash("IsCrouching");
+        public static readonly int IS_SLIPPING = Animator.StringToHash("IsSlipping");
         
         [SerializeField] private Transform mainCamera;
         [SerializeField] private Transform groundPoint;
@@ -39,6 +40,7 @@ namespace Player.StateMachines.Movement {
         public Falling fallingState { get; private set; }
         public Sneaking sneakingState { get; private set; }
         public Crouching crouchingState { get; private set; }
+        public Slipping slippingState { get; private set; }
 
         private void Awake() {
             idleState = new Idle(this);
@@ -48,6 +50,7 @@ namespace Player.StateMachines.Movement {
             fallingState = new Falling(this);
             sneakingState = new Sneaking(this);
             crouchingState = new Crouching(this);
+            slippingState = new Slipping(this);
             
             characterController = GetComponent<CharacterController>();
         }
