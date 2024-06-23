@@ -1237,6 +1237,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 490670261}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &190476646 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8601641946481644930, guid: d98d14abf379aee409658f82ea06bfbe,
+    type: 3}
+  m_PrefabInstance: {fileID: 2990490991730345224}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &196989843
 GameObject:
   m_ObjectHideFlags: 0
@@ -14876,7 +14882,7 @@ PrefabInstance:
         type: 3}
       propertyPath: crossbowInHand
       value: 
-      objectReference: {fileID: 2990490991730345227}
+      objectReference: {fileID: 190476646}
     - target: {fileID: 2644974641594602498, guid: d98d14abf379aee409658f82ea06bfbe,
         type: 3}
       propertyPath: m_Name
@@ -14980,12 +14986,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea42f582771b4f31b3d25fa01fb63745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &2990490991730345227 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8601641946481644930, guid: d98d14abf379aee409658f82ea06bfbe,
-    type: 3}
-  m_PrefabInstance: {fileID: 2990490991730345224}
-  m_PrefabAsset: {fileID: 0}
 --- !u!33 &2998447660982310011
 MeshFilter:
   m_ObjectHideFlags: 0
