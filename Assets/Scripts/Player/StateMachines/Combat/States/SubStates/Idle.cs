@@ -14,7 +14,10 @@ namespace Player.StateMachines.Combat.States.SubStates {
 
         public override void Update() {
             if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                movementStateMachine.ChangeState(movementStateMachine.equippingWeaponState);
+                movementStateMachine.ChangeState(movementStateMachine.swordEquippingState);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                movementStateMachine.ChangeState(movementStateMachine.crossbowEquippingState);
             }
         }
 

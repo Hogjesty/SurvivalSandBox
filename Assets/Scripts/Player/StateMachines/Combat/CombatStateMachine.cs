@@ -1,34 +1,54 @@
-using System;
 using Player.StateMachines.Combat.States.SubStates;
+using Player.StateMachines.Combat.States.SubStates.Crossbow;
+using Player.StateMachines.Combat.States.SubStates.Sword;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Player.StateMachines.Combat {
     public class CombatStateMachine : StateMachine {
 
-        public int IsEquippingWeaponBool => Animator.StringToHash("IsEquippingWeapon");
-        public int IsUnequippingWeaponBool => Animator.StringToHash("IsUnequippingWeapon");
-        public int IsHoldingWeaponBool => Animator.StringToHash("IsHoldingWeapon");
-        public int IsAttackingBool => Animator.StringToHash("IsAttacking");
+        public static readonly int IS_SWORD_EQUIPPING = Animator.StringToHash("IsSwordEquipping");
+        public static readonly int IS_SWORD_HOLDING = Animator.StringToHash("IsSwordHolding");
+        public static readonly int IS_SWORD_UNEQUIPPING = Animator.StringToHash("IsSwordUnequipping");
+        public static readonly int IS_SWORD_ATTACKING = Animator.StringToHash("IsSwordAttacking");
+        
+        public static readonly int IS_CROSSBOW_EQUIPPING = Animator.StringToHash("IsCrossbowEquipping");
+        public static readonly int IS_CROSSBOW_HOLDING = Animator.StringToHash("IsCrossbowHolding");
+        public static readonly int IS_CROSSBOW_UNEQUIPPING = Animator.StringToHash("IsCrossbowUnequipping");
+        public static readonly int IS_CROSSBOW_ATTACKING = Animator.StringToHash("IsCrossbowAttacking");
+        public static readonly int IS_CROSSBOW_RELOADING = Animator.StringToHash("IsCrossbowReloading");
         
         public Idle idleState { get; private set; }
-        public EquippingWeapon equippingWeaponState { get; private set; }
-        public HoldingWeapon holdingWeaponState { get; private set; }
-        public UnequippingWeapon unequippingWeaponState { get; private set; }
-        public Attacking attackingState { get; private set; }
+        public SwordEquipping swordEquippingState { get; private set; }
+        public SwordHolding swordHoldingState { get; private set; }
+        public SwordUnequipping swordUnequippingState { get; private set; }
+        public SwordAttacking swordAttackingState { get; private set; }
+        
+        public CrossbowEquipping crossbowEquippingState { get; private set; }
+        public CrossbowHolding crossbowHoldingState { get; private set; }
+        public CrossbowUnequipping crossbowUnequippingState { get; private set; }
+        public CrossbowAttacking crossbowAttackingState { get; private set; }
+        public CrossbowReloading crossbowReloadingState { get; private set; }
 
         [SerializeField] private Animator playerAnimator;
         [SerializeField] private Transform hitPoint;
         [SerializeField] private LayerMask enemyLayers;
         
-        [SerializeField] private GameObject weaponInHand;
-        [SerializeField] private GameObject weaponInBelt;
+        [SerializeField] private GameObject swordInHand;
+        [SerializeField] private GameObject swordInBelt;
+        [SerializeField] private GameObject crossbowInHand;
 
         private void Awake() {
             idleState = new Idle(this);
-            equippingWeaponState = new EquippingWeapon(this);
-            holdingWeaponState = new HoldingWeapon(this);
-            unequippingWeaponState = new UnequippingWeapon(this);
-            attackingState = new Attacking(this);
+            swordEquippingState = new SwordEquipping(this);
+            swordHoldingState = new SwordHolding(this);
+            swordUnequippingState = new SwordUnequipping(this);
+            swordAttackingState = new SwordAttacking(this);
+            crossbowEquippingState = new CrossbowEquipping(this);
+            crossbowHoldingState = new CrossbowHolding(this);
+            crossbowUnequippingState = new CrossbowUnequipping(this);
+            crossbowAttackingState = new CrossbowAttacking(this);
+            crossbowReloadingState = new CrossbowReloading(this);
         }
 
         protected override BaseState GetInitialState() {
@@ -41,8 +61,9 @@ namespace Player.StateMachines.Combat {
 
         public Transform GetHitPoint => hitPoint;
         public LayerMask GetEnemyLayers => enemyLayers;
-        public GameObject GetWeaponInHand => weaponInHand;
-        public GameObject GetWeaponInBelt => weaponInBelt;
+        public GameObject GetSwordInHand => swordInHand;
+        public GameObject GetSwordInBelt => swordInBelt;
+        public GameObject GetCrossbowInHand => crossbowInHand;
 
         // private void OnGUI() {
         //     GUILayout.BeginArea(new Rect(10f, 60f, 700f, 100f));
