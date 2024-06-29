@@ -1,11 +1,12 @@
+using Player.StateMachines.Combat.States.SubStates.Crossbow;
 using UnityEngine;
 
 namespace Player.StateMachines.Combat.States.SubStates {
     public class Idle : BaseState {
-        private readonly CombatStateMachine movementStateMachine;
+        private readonly CombatStateMachine combatStateMachine;
         
         public Idle(StateMachine stateMachine) : base(stateMachine) {
-            movementStateMachine = (CombatStateMachine) this.stateMachine;
+            combatStateMachine = (CombatStateMachine) this.stateMachine;
         }
 
         public override void Enter() {
@@ -14,10 +15,10 @@ namespace Player.StateMachines.Combat.States.SubStates {
 
         public override void Update() {
             if (Input.GetKeyDown(KeyCode.Alpha1)) {
-                movementStateMachine.ChangeState(movementStateMachine.swordEquippingState);
+                combatStateMachine.ChangeState(combatStateMachine.swordEquippingState);
             }
             if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                movementStateMachine.ChangeState(movementStateMachine.crossbowEquippingState);
+                combatStateMachine.ChangeState(combatStateMachine.crossbowEquippingState);
             }
         }
 

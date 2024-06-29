@@ -2,7 +2,6 @@ using Player.StateMachines.Combat.States.SubStates;
 using Player.StateMachines.Combat.States.SubStates.Crossbow;
 using Player.StateMachines.Combat.States.SubStates.Sword;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Player.StateMachines.Combat {
     public class CombatStateMachine : StateMachine {
@@ -32,11 +31,13 @@ namespace Player.StateMachines.Combat {
 
         [SerializeField] private Animator playerAnimator;
         [SerializeField] private Transform hitPoint;
+        [SerializeField] private GameObject arrowTrail;
         [SerializeField] private LayerMask enemyLayers;
         
         [SerializeField] private GameObject swordInHand;
         [SerializeField] private GameObject swordInBelt;
         [SerializeField] private GameObject crossbowInHand;
+        [SerializeField] private Transform mainCamera;
 
         private void Awake() {
             idleState = new Idle(this);
@@ -59,7 +60,17 @@ namespace Player.StateMachines.Combat {
             playerAnimator.SetBool(animHashedName, value);
         }
 
+        public void DestroyGameObject(GameObject obj) {
+            Destroy(obj);
+        }
+
+        public GameObject InstantiateGameObject(GameObject obj) {
+            return Instantiate(obj);
+        }
+
         public Transform GetHitPoint => hitPoint;
+        public Transform GetMainCamera => mainCamera;
+        public GameObject GetArrowTrail => arrowTrail;
         public LayerMask GetEnemyLayers => enemyLayers;
         public GameObject GetSwordInHand => swordInHand;
         public GameObject GetSwordInBelt => swordInBelt;

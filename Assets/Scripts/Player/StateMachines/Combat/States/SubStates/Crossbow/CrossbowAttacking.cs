@@ -1,4 +1,6 @@
+using Effects;
 using Player.AnimationsEvents;
+using UnityEngine;
 
 namespace Player.StateMachines.Combat.States.SubStates.Crossbow {
     public class CrossbowAttacking : BaseState {
@@ -14,6 +16,15 @@ namespace Player.StateMachines.Combat.States.SubStates.Crossbow {
         public override void Enter() {
             combatStateMachine.SetAnimBool(CombatStateMachine.IS_CROSSBOW_ATTACKING, true);
             isAnimationEnded = false;
+            
+            Vector3 cameraForward = combatStateMachine.GetMainCamera.forward;
+            bool raycast = Physics.Raycast(combatStateMachine.GetCrossbowInHand.transform.position,
+                cameraForward, out RaycastHit hit);
+            
+            ArrowTrailMoveEffect arrowTrailMoveEffect = combatStateMachine.InstantiateGameObject(combatStateMachine.GetArrowTrail)
+                .GetComponent<ArrowTrailMoveEffect>();
+            arrowTrailMoveEffect.gameObject.transform.position = combatStateMachine.GetCrossbowInHand.transform.position;
+            arrowTrailMoveEffect.Destination = raycast ? hit.point : combatStateMachine.GetMainCamera.position + cameraForward * 100;
         }
 
         public override void Update() {

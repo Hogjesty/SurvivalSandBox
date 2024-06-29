@@ -3,6 +3,8 @@ using UnityEngine;
 namespace Player.StateMachines.Combat.States.SubStates.Crossbow {
     public class CrossbowHolding : BaseState {
         private readonly CombatStateMachine combatStateMachine;
+
+        private bool isCrossbowCharged;
         
         public CrossbowHolding(StateMachine stateMachine) : base(stateMachine) {
             combatStateMachine = (CombatStateMachine) this.stateMachine;
@@ -13,17 +15,7 @@ namespace Player.StateMachines.Combat.States.SubStates.Crossbow {
         }
 
         public override void Update() {
-            if (Input.GetKeyDown(KeyCode.Alpha2)) {
-                combatStateMachine.ChangeState(combatStateMachine.crossbowUnequippingState);
-            }
-
-            if (Input.GetKey(KeyCode.Mouse0)) {
-                combatStateMachine.ChangeState(combatStateMachine.crossbowAttackingState);
-            }
-
-            if (Input.GetKey(KeyCode.R)) {
-                combatStateMachine.ChangeState(combatStateMachine.crossbowReloadingState);
-            }
+            CheckForTransitions();
         }
 
         public override void FixedUpdate() {
@@ -31,6 +23,22 @@ namespace Player.StateMachines.Combat.States.SubStates.Crossbow {
 
         public override void Exit() {
             combatStateMachine.SetAnimBool(CombatStateMachine.IS_CROSSBOW_HOLDING, false);
+        }
+
+        private void CheckForTransitions() {
+            if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                combatStateMachine.ChangeState(combatStateMachine.crossbowUnequippingState);
+            }
+
+            if (Input.GetKey(KeyCode.Mouse0) && isCrossbowCharged) {
+                combatStateMachine.ChangeState(combatStateMachine.crossbowAttackingState);
+                isCrossbowCharged = false;
+            }
+
+            if (Input.GetKey(KeyCode.R) && !isCrossbowCharged) {
+                combatStateMachine.ChangeState(combatStateMachine.crossbowReloadingState);
+                isCrossbowCharged = true;
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using Player.StateMachines;
 using Player.StateMachines.Movement.States.SubStates;
 using UnityEngine;
@@ -47,5 +48,10 @@ public class CameraScript : MonoBehaviour {
         Ray ray = new Ray(sphereCastPosition, targetPosition - sphereCastPosition);
         bool sphereCast = Physics.SphereCast(ray, sphereRadius, out RaycastHit sphereHit, cameraDistance, obstacle);
         return sphereCast ? sphereHit.point + sphereHit.normal * (sphereRadius + 0.01f) : targetPosition;
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawSphere(sphereCastUp.position, sphereRadius);
     }
 }

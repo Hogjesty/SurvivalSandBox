@@ -1,4 +1,3 @@
-using System;
 using Player.StateMachines.Movement.States.SubStates;
 using UnityEngine;
 
@@ -11,12 +10,20 @@ namespace Player.StateMachines.Movement {
         public static readonly int IS_FALLING = Animator.StringToHash("IsFalling");
         public static readonly int IS_SNEAKING = Animator.StringToHash("IsSneaking");
         public static readonly int IS_CROUCHING = Animator.StringToHash("IsCrouching");
-        public static readonly int IS_SLIPPING = Animator.StringToHash("IsSlipping");
+        
+        public Idle idleState { get; private set; }
+        public Jogging joggingState { get; private set; }
+        public Running runningState { get; private set; }
+        public Jumping jumpingState { get; private set; }
+        public Falling fallingState { get; private set; }
+        public Sneaking sneakingState { get; private set; }
+        public Crouching crouchingState { get; private set; }
         
         [SerializeField] private Transform mainCamera;
         [SerializeField] private Transform groundPoint;
         [SerializeField] private Transform sphereCastPointGround;
         [SerializeField] private Animator playerAnimator;
+        [SerializeField] private StateMachineManager stateMachineManager;
 
         [SerializeField] private float speed;
         [SerializeField] private float sprintCoefficient;
@@ -33,15 +40,6 @@ namespace Player.StateMachines.Movement {
 
         private CharacterController characterController;
 
-        public Idle idleState { get; private set; }
-        public Jogging joggingState { get; private set; }
-        public Running runningState { get; private set; }
-        public Jumping jumpingState { get; private set; }
-        public Falling fallingState { get; private set; }
-        public Sneaking sneakingState { get; private set; }
-        public Crouching crouchingState { get; private set; }
-        public Slipping slippingState { get; private set; }
-
         private void Awake() {
             idleState = new Idle(this);
             joggingState = new Jogging(this);
@@ -50,7 +48,6 @@ namespace Player.StateMachines.Movement {
             fallingState = new Falling(this);
             sneakingState = new Sneaking(this);
             crouchingState = new Crouching(this);
-            slippingState = new Slipping(this);
             
             characterController = GetComponent<CharacterController>();
         }
@@ -67,6 +64,14 @@ namespace Player.StateMachines.Movement {
             
             Vector3 globalMovingDirection = transform.TransformDirection(0, gravity, direction.normalized.magnitude * speed);
             characterController.Move(globalMovingDirection * Time.deltaTime);
+        }
+
+        public void Rotate(float rotationSpeed) {
+            transform.rotation = Quaternion.Lerp(
+                transform.rotation,
+                Quaternion.Euler(0, mainCamera.rotation.eulerAngles.y, 0),
+                rotationSpeed
+            );
         }
 
         protected override BaseState GetInitialState() {
@@ -86,6 +91,7 @@ namespace Player.StateMachines.Movement {
         public float GetSlippingSphereCastRadius => slippingSphereCastRadius;
         public float GetOnGroundSphereRadius => onGroundSphereRadius;
         public float GetSlippingSpeed => slippingSpeed;
+        public StateMachineManager GetStateMachineManager => stateMachineManager;
         
         private void OnGUI() {
             GUILayout.BeginArea(new Rect(10f, 10f, 400f, 100f));
